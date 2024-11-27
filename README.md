@@ -13,16 +13,13 @@ Our framework provides:
 - 📈 Extensive evaluation across diverse coding datasets
 - 🎯 Standardized benchmarking and comparison tools
 
-## 🚀 Supported Models
-### Original LLMs / Compressed LLMs
+## 🚀 Supported Models (Original LLMs / Compressed LLMs)
 
-<!-- Replace {path_to_logo} with actual paths after adding logos to your repo's assets folder -->
-
-- <img src="./assets/logos/codellama.png" width="20"> CodeLLaMA  <!-- Download from Meta's official repo -->
-- <img src="./assets/logos/starcoder.png" width="20"> StarCoder  <!-- From BigCode/HuggingFace -->
-- <img src="./assets/logos/codegen.png" width="20"> CodeGen     <!-- From Salesforce -->
-- <img src="./assets/logos/deepseek.png" width="20"> DeepSeek   <!-- From DeepSeek official website -->
-- <img src="./assets/logos/incoder.png" width="20"> InCoder     <!-- From Meta/Facebook -->
+- <img src="./assets/llama_logo.jpg" width="20"> [CodeLLaMA](https://github.com/meta-llama/codellama)  <!-- Download from Meta's official repo -->
+- <img src="./assets/starcoder_logo.png" width="20"> [StarCoder](https://github.com/bigcode-project/starcoder)  <!-- From BigCode/HuggingFace -->
+- <img src="./assets/codegen_logo.png" width="20"> [CodeGen](https://github.com/salesforce/CodeGen)     <!-- From Salesforce -->
+- <img src="./assets/deepseek_logo.png" width="20"> [DeepSeek](https://github.com/deepseek-ai/DeepSeek-Coder-V2)   <!-- From DeepSeek official website -->
+- <img src="./assets/incoder_logo.png" width="20"> [InCoder](https://github.com/dpfried/incoder)     <!-- From Meta/Facebook -->
 - 🎩 [Magicoder](https://github.com/ise-uiuc/magicoder)
 
 ## 🛠️ Implemented Attack Methods (In Plan)
