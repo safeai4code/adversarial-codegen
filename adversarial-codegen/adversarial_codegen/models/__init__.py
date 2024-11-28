@@ -1,0 +1,22 @@
+from .model_loader import Models
+from .model_implementations import *
+from .model_registry import ModelRegistry
+
+# Register default models
+@ModelRegistry.register("codellama")
+class CodeLLaMAModel(CodeLLaMAModel): pass
+
+@ModelRegistry.register("starcoder")
+class StarCoderModel(StarCoderModel): pass
+
+@ModelRegistry.register("codegen")
+class CodeGenModel(CodeGenModel): pass
+
+@ModelRegistry.register("deepseek")
+class DeepSeekModel(DeepSeekModel): pass
+
+@ModelRegistry.register("incoder")
+class InCoderModel(InCoderModel): pass
+
+@ModelRegistry.register("magicoder")
+class MagicoderModel(MagicoderModel): pass
