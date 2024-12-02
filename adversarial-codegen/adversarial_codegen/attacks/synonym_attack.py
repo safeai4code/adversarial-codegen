@@ -1,29 +1,32 @@
-from typing import List, Dict, Any, Optional, Tuple
 import re
 import random
+
+from ..framework.base_attack import BaseAttack
+from typing import Dict, Any, Optional
 from nltk.corpus import wordnet as wn
 from nltk.tokenize import word_tokenize
 from nltk.tag import pos_tag
 from nltk.corpus import stopwords
 
-class SynonymAttack:
-    """
-    Performs synonym replacement on natural language prompts or docstring comments.
-    """
-    
-    def __init__(self, replacement_probability: float = 0.3, max_synonyms: int = 5):
-        """
-        Initialize the attack.
-        
-        Args:
-            replacement_probability: Chance of replacing each eligible word
-            max_synonyms: Maximum number of synonyms to consider for each word
-        """
-        self.replacement_probability = replacement_probability
-        self.max_synonyms = max_synonyms
+class SynonymAttack(BaseAttack):
+    def __init__(self, config: Dict[str, Any]):
+        super().__init__(config)
         self.stop_words = set(stopwords.words('english'))
-        # Parts of speech that we want to replace
         self.replaceable_pos = {'NN', 'NNS', 'VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ', 'JJ', 'RB'}
+
+    def validate_config(self) -> None:
+        required = ['replacement_probability', 'max_synonyms', 'input_type']
+        if not all(key in self.config for key in required):
+            raise ValueError(f"Config must contain: {required}")
+        if not 0 <= self.config['replacement_probability'] <= 1:
+            raise ValueError("replacement_probability must be between 0 and 1")
+
+    def generate_adversarial_example(self, input_text: str, target_label: Optional[Any] = None) -> str:
+        if self.config['input_type'] == 'prompt':
+            return self._attack_prompt(input_text)
+        elif self.config['input_type'] == 'code':
+            return self._attack_code_comments(input_text)
+        raise ValueError(f"Unknown input type: {self.config['input_type']}")
     
     def attack_prompt(self, prompt: str) -> str:
         """Apply synonym replacement to natural language prompt."""

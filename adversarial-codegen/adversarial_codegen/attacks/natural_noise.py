@@ -13,9 +13,11 @@ class NaturalNoiseAttack(BaseAttack):
         if not 0 <= self.config['noise_probability'] <= 1:
             raise ValueError("noise_probability must be between 0 and 1")
     
-    def generate_adversarial_example(self,
-                                   input_code: str,
-                                   target_label: Optional[Any] = None) -> str:
+    def generate_adversarial_example(
+            self,
+            input_code: str,
+            target_label: Optional[Any] = None
+        ) -> str:
         modified_code = input_code
         
         if 'comments' in self.config['noise_types']:
@@ -62,14 +64,6 @@ class NaturalNoiseAttack(BaseAttack):
                 modified_code = modified_code.replace(f" {old_name} ", f" {new_name} ")
         
         return modified_code
-    
-    def attack_success_criteria(self,
-                              original_output: Any,
-                              adversarial_output: Any) -> bool:
-        # For natural noise attacks, success is measured by different output
-        # while maintaining syntactic validity
-        return (original_output != adversarial_output and 
-                self._is_valid_python(adversarial_output))
     
     def _is_valid_python(self, code: str) -> bool:
         try:

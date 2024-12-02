@@ -14,9 +14,11 @@ class BaseAttack(ABC):
         pass
     
     @abstractmethod
-    def generate_adversarial_example(self, 
-                                   input_code: str,
-                                   target_label: Optional[Any] = None) -> str:
+    def generate_adversarial_example(
+            self, 
+            input_code: str,
+            target_label: Optional[Any] = None
+        ) -> str:
         """Generate an adversarial example from the input code.
         
         Args:
@@ -25,20 +27,5 @@ class BaseAttack(ABC):
             
         Returns:
             Modified code with adversarial perturbations
-        """
-        pass
-    
-    @abstractmethod
-    def attack_success_criteria(self, 
-                              original_output: Any,
-                              adversarial_output: Any) -> bool:
-        """Determine if the attack was successful.
-        
-        Args:
-            original_output: Model output for original input
-            adversarial_output: Model output for adversarial input
-            
-        Returns:
-            True if attack succeeded, False otherwise
         """
         pass

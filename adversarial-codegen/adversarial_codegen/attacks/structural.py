@@ -12,9 +12,11 @@ class StructuralAttack(BaseAttack):
         if not all(key in self.config for key in required_keys):
             raise ValueError(f"Config must contain: {required_keys}")
     
-    def generate_adversarial_example(self,
-                                   input_code: str,
-                                   target_label: Optional[Any] = None) -> str:
+    def generate_adversarial_example(
+            self,
+            input_code: str,
+            target_label: Optional[Any] = None
+        ) -> str:
         try:
             tree = ast.parse(input_code)
             modified_tree = self._apply_structural_changes(tree)
@@ -29,15 +31,11 @@ class StructuralAttack(BaseAttack):
         )
         return transformer.visit(tree)
     
-    def attack_success_criteria(self,
-                              original_output: Any,
-                              adversarial_output: Any) -> bool:
-        return (original_output != adversarial_output and 
-                self._verify_structure_changed(original_output, adversarial_output))
-    
-    def _verify_structure_changed(self,
-                                original_code: str,
-                                modified_code: str) -> bool:
+    def _verify_structure_changed(
+            self,
+            original_code: str,
+            modified_code: str
+        ) -> bool:
         try:
             orig_ast = ast.parse(original_code)
             mod_ast = ast.parse(modified_code)
@@ -45,9 +43,11 @@ class StructuralAttack(BaseAttack):
         except:
             return False
     
-    def _compute_structural_difference(self,
-                                    tree1: ast.AST,
-                                    tree2: ast.AST) -> float:
+    def _compute_structural_difference(
+            self,
+            tree1: ast.AST,
+            tree2: ast.AST
+        ) -> float:
         # Implement structural difference metric
         # Could be based on AST shape, node types, etc.
         return 1.0  # Placeholder implementation

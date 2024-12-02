@@ -10,9 +10,11 @@ class SemanticAttack(BaseAttack):
         if not all(key in self.config for key in required_keys):
             raise ValueError(f"Config must contain: {required_keys}")
     
-    def generate_adversarial_example(self,
-                                   input_code: str,
-                                   target_label: Optional[Any] = None) -> str:
+    def generate_adversarial_example(
+            self,
+            input_code: str,
+            target_label: Optional[Any] = None
+        ) -> str:
         try:
             tree = ast.parse(input_code)
             modified_tree = self._apply_transformations(tree)
@@ -27,16 +29,11 @@ class SemanticAttack(BaseAttack):
         )
         return transformer.visit(tree)
     
-    def attack_success_criteria(self,
-                              original_output: Any,
-                              adversarial_output: Any) -> bool:
-        # For semantic attacks, we want different output but preserved functionality
-        return (original_output != adversarial_output and 
-                self._verify_semantic_equivalence(original_output, adversarial_output))
-    
-    def _verify_semantic_equivalence(self,
-                                   original_code: str,
-                                   modified_code: str) -> bool:
+    def _verify_semantic_equivalence(
+            self,
+            original_code: str,
+            modified_code: str
+        ) -> bool:
         # This would need a more sophisticated implementation for real use
         # Could involve running test cases or using program analysis
         try:
