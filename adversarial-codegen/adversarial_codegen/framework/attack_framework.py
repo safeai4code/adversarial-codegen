@@ -1,37 +1,53 @@
-from ..attacks.natural_noise_attack import NaturalNoiseAttack
-from ..attacks.structural_attack import StructuralAttack
-from ..attacks.semantic_attack import SemanticAttack
-
+from typing import List, Dict, Any, Optional
+from ..models.base_model import BaseModel
+from .base_attack import BaseAttack
 
 class AttackFramework:
-    def __init__(self):
-        self.supported_attacks = {
-            "natural_noise": NaturalNoiseAttack,
-            "structural": StructuralAttack,
-            "semantic": SemanticAttack
-        }
-
-    def run_attack(self, model, dataset, attack_type, params=None):
-        if attack_type not in self.supported_attacks:
-            raise ValueError(f"Unsupported attack type: {attack_type}")
+    """Orchestrates adversarial attacks against code generation models."""
+    
+    def __init__(self, 
+                 model: BaseModel,
+                 attacks: List[BaseAttack],
+                 config: Dict[str, Any]):
+        self.model = model
+        self.attacks = attacks
+        self.config = config
         
-        attack = self.supported_attacks[attack_type](params)
-        results = []
+    def run_attack(self,
+                  input_code: str,
+                  target_label: Optional[Any] = None) -> Dict[str, Any]:
+        """Run all configured attacks on the input code.
         
-        for example in dataset:
-            attacked_input = attack.generate(example)
-            original_output = model.generate(example)
-            attacked_output = model.generate(attacked_input)
+        Args:
+            input_code: Original code to attack
+            target_label: Optional target label for targeted attacks
             
-            results.append({
-                "original_input": example,
-                "attacked_input": attacked_input,
-                "original_output": original_output,
-                "attacked_output": attacked_output
-            })
+        Returns:
+            Dictionary containing attack results and metrics
+        """
+        results = {}
+        original_output = self.model.generate(input_code)
         
+        for attack in self.attacks:
+            try:
+                adversarial_code = attack.generate_adversarial_example(
+                    input_code, target_label)
+                adversarial_output = self.model.generate(adversarial_code)
+                
+                success = attack.attack_success_criteria(
+                    original_output, adversarial_output)
+                
+                results[attack.__class__.__name__] = {
+                    'success': success,
+                    'original_code': input_code,
+                    'adversarial_code': adversarial_code,
+                    'original_output': original_output,
+                    'adversarial_output': adversarial_output
+                }
+            except Exception as e:
+                results[attack.__class__.__name__] = {
+                    'success': False,
+                    'error': str(e)
+                }
+                
         return results
-
-    def generate_report(self, results):
-        # Implement report generation logic
-        pass
