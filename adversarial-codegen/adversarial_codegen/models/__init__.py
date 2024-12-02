@@ -19,4 +19,4 @@ class DeepSeekModel(DeepSeekModel): pass
 class InCoderModel(InCoderModel): pass
 
 @ModelRegistry.register("magicoder")
-class MagicoderModel(MagicoderModel): pass
+class MagicCoderModel(MagicCoderModel): pass
