@@ -23,7 +23,11 @@ class SynonymAttack(BaseAttack):
 
     def generate_adversarial_example(self, input_text: str, target_label: Optional[Any] = None) -> str:
         if self.config['input_type'] == 'prompt':
-            return self._attack_prompt(input_text)
+            input_text_lines = input_text.splitlines()
+            assert len(input_text_lines) == 4, "Unknown prompt format"
+            # Attack the prompt natural language text
+            attack_line = self._attack_prompt(input_text_lines[1])
+            return '\n'.join([input_text_lines[0], attack_line, input_text_lines[2], input_text_lines[3]])
         elif self.config['input_type'] == 'code':
             return self._attack_code_comments(input_text)
         raise ValueError(f"Unknown input type: {self.config['input_type']}")
