@@ -1,4 +1,29 @@
 from setuptools import setup, find_packages
+import ssl
+import nltk
+
+# Sometimes NLTK downloads fail due to SSL certificate issues
+try:
+    _create_unverified_https_context = ssl._create_unverified_context
+except AttributeError:
+    pass
+else:
+    ssl._create_default_https_context = _create_unverified_https_context
+
+def download_nltk_data():
+    """Download required NLTK data packages."""
+    nltk_data = [
+        'punkt', 'averaged_perceptron_tagger', 'wordnet', 'stopwords', 
+        'punkt_tab', 'averaged_perceptron_tagger_eng',
+    ]
+    for package in nltk_data:
+        try:
+            nltk.download(package, quiet=True)
+        except Exception as e:
+            print(f"Error downloading {package}: {str(e)}")
+
+# Download NLTK data during setup
+download_nltk_data()
 
 # Core dependencies required for the project
 REQUIRED_PACKAGES = [
@@ -10,6 +35,8 @@ REQUIRED_PACKAGES = [
     'numpy>=2.1.3',
     'pandas>=2.2.3',
     'huggingface-hub>=0.26.3',
+    'nltk>=3.6.0',
+    'evalplus',
 ]
 
 # Testing dependencies
@@ -29,8 +56,8 @@ EXTRA_PACKAGES = {
 setup(
     name="adversarial-codegen",
     version="0.1.0",
-    author="Your Name",
-    author_email="your.email@example.com",
+    author="Sen Fang",
+    author_email="fangsen1996@gmail.com",
     description="A framework for testing LLM robustness under adversarial attacks",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",

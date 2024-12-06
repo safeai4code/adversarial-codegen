@@ -1,5 +1,6 @@
 from typing import Dict, Any, List, Optional
 import os
+import json
 import tempfile
 from evalplus.data import (
     get_human_eval_plus, 
@@ -9,7 +10,7 @@ from evalplus.data import (
 from adversarial_codegen.models.base_model import BaseModel
 from adversarial_codegen.framework.base_attack import BaseAttack 
 from adversarial_codegen.attacks.synonym_attack import SynonymAttack
-from adversarial_codegen.utils.evaluation import evaluate_adversarial_attack
+from adversarial_codegen.utils.evaluation import evaluate_code_generations
 
 class AttackFramework:
     def __init__(self, 
@@ -38,8 +39,10 @@ class AttackFramework:
         # Load appropriate dataset
         if self.dataset == "humaneval":
             self.problems = get_human_eval_plus(mini=mini)
+            self.attack_config['input_type'] = 'code'
         elif self.dataset == "mbpp":
             self.problems = get_mbpp_plus(mini=mini)
+            self.attack_config['input_type'] = 'prompt'
         else:
             raise ValueError(f"Unknown dataset: {dataset}. Choose 'humaneval' or 'mbpp'")
     
@@ -64,21 +67,22 @@ class AttackFramework:
     #             prompt += f"assert {problem['entry_point']}({input_case}) == {output_case}\n"
     #         return prompt
     
-    def run_attack(self, sample_indices: Optional[List[int]] = None) -> Dict[str, Any]:
+    def run_attack(self, sample_indices: Optional[List[int]] = None, save_adv_prompt_path: str = None) -> Dict[str, Any]:
         """
         Run attack pipeline on selected problems.
         
         Args:
             sample_indices: Optional list of problem indices to attack.
                           If None, all problems will be used.
+            save_adv_prompt: Optional path to save adversarial prompts to a file.
         
         Returns:
             Dictionary containing attack results and evaluation metrics
         """
         # Set up temp directories for outputs
-        temp_dir = tempfile.mkdtemp()
-        original_path = os.path.join(temp_dir, "original_generations.jsonl")
-        adversarial_path = os.path.join(temp_dir, "adversarial_generations.jsonl")
+        # temp_dir = tempfile.mkdtemp()
+        # original_path = os.path.join(temp_dir, "original_generations.jsonl")
+        # adversarial_path = os.path.join(temp_dir, "adversarial_generations.jsonl")
         
         # Track generations
         original_generations = []
@@ -90,8 +94,9 @@ class AttackFramework:
             else [(k, v) for i, (k, v) in enumerate(self.problems.items()) 
                   if i in sample_indices]
         )
-        breakpoint()
         
+        # breakpoint()
+
         for task_id, problem in problems_to_attack:
             # Get appropriate prompt for dataset type
             # prompt = self._get_problem_prompt(problem)
@@ -99,14 +104,6 @@ class AttackFramework:
             
             # Generate original output
             original_output = self.model.generate(prompt)
-            
-            # Generate adversarial prompt by attacking docstring/comments
-            if self.dataset == "humaneval":
-                self.attack_config['input_type'] = 'code'
-            elif self.dataset == "mbpp":
-                self.attack_config['input_type'] = 'prompt'
-            else:
-                raise ValueError(f"Unknown dataset: {self.dataset}")
             
             adversarial_prompt = self.attacker.generate_adversarial_example(prompt)
             adversarial_output = self.model.generate(adversarial_prompt)
@@ -116,56 +113,65 @@ class AttackFramework:
                 "task_id": task_id,
                 "completion": original_output,
                 "prompt": prompt,
-                "entry_point": problem["entry_point"]  # Required for MBPP
             })
             
             adversarial_generations.append({
                 "task_id": task_id,
                 "completion": adversarial_output,
                 "prompt": adversarial_prompt,
-                "entry_point": problem["entry_point"]
             })
-        
-        # Write generations to files
-        write_jsonl(original_path, original_generations)
-        write_jsonl(adversarial_path, adversarial_generations)
+
+        if save_adv_prompt_path:
+            save_adv_prompt = os.path.join(save_adv_prompt_path, "adversarial_prompts.jsonl")
+            save_ori_prompt = os.path.join(save_adv_prompt_path, "original_prompts.jsonl")
+            with open(save_adv_prompt, 'w') as f:
+                for adv in adversarial_generations:
+                    f.write(json.dumps(adv) + '\n')
+            with open(save_ori_prompt, 'w') as f:
+                for ori in original_generations:
+                    f.write(json.dumps(ori) + '\n')
+
+        # # Write generations to files
+        # write_jsonl(original_path, original_generations)
+        # write_jsonl(adversarial_path, adversarial_generations)
         
         # Run evaluation
-        results = evaluate_adversarial_attack(
-            original_generations=original_generations,
-            adversarial_generations=adversarial_generations,
-            dataset=self.dataset,
-            mini=self.mini
-        )
+        # results = evaluate_code_generations(
+        #     original_generations=original_generations,
+        #     adversarial_generations=adversarial_generations,
+        #     dataset=self.dataset,
+        #     mini=self.mini
+        # )
         
-        # Add attack details to results
-        results["attack_details"] = {
-            "method": self.attack_method,
-            "config": self.attack_config,
-            "dataset": self.dataset,
-            "num_samples": len(problems_to_attack)
-        }
+        # # Add attack details to results
+        # results["attack_details"] = {
+        #     "method": self.attack_method,
+        #     "config": self.attack_config,
+        #     "dataset": self.dataset,
+        #     "num_samples": len(problems_to_attack)
+        # }
         
-        # Add generation details
-        results["generations"] = {
-            task_id: {
-                "original": {
-                    "prompt": orig["prompt"],
-                    "completion": orig["completion"],
-                    "entry_point": orig["entry_point"]
-                },
-                "adversarial": {
-                    "prompt": adv["prompt"],
-                    "completion": adv["completion"],
-                    "entry_point": adv["entry_point"]
-                }
-            }
-            for task_id, orig, adv in zip(
-                [g["task_id"] for g in original_generations],
-                original_generations,
-                adversarial_generations
-            )
-        }
+        # # Add generation details
+        # results["generations"] = {
+        #     task_id: {
+        #         "original": {
+        #             "prompt": orig["prompt"],
+        #             "completion": orig["completion"],
+        #             "entry_point": orig["entry_point"]
+        #         },
+        #         "adversarial": {
+        #             "prompt": adv["prompt"],
+        #             "completion": adv["completion"],
+        #             "entry_point": adv["entry_point"]
+        #         }
+        #     }
+        #     for task_id, orig, adv in zip(
+        #         [g["task_id"] for g in original_generations],
+        #         original_generations,
+        #         adversarial_generations
+        #     )
+        # }
+        results = []
         
         return results
 
@@ -174,7 +180,9 @@ if __name__ == "__main__":
     from adversarial_codegen.models import Models
     model = Models.load("codellama", model_path="/home/sfang9/workshop/llms/original_llms/Llama-3.2-1B")
     attack_config = {
-        "replacement_probability": 0.5,
-        "max_synonyms": 5
+        "replacement_probability": 0.25,
+        "max_synonyms": 3,
+        "input_type": "prompt"
     }
     attack_framework = AttackFramework(model=model, attack_method="synonym", attack_config=attack_config, dataset="mbpp")
+    results = attack_framework.run_attack(save_adv_prompt_path="/home/sfang9/workshop/aisec/adversarial-attack-nlp")

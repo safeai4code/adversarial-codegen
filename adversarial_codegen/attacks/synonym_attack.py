@@ -2,7 +2,7 @@ import re
 import random
 
 from ..framework.base_attack import BaseAttack
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 from nltk.corpus import wordnet as wn
 from nltk.tokenize import word_tokenize
 from nltk.tag import pos_tag
@@ -32,7 +32,7 @@ class SynonymAttack(BaseAttack):
             return self._attack_code_comments(input_text)
         raise ValueError(f"Unknown input type: {self.config['input_type']}")
     
-    def attack_prompt(self, prompt: str) -> str:
+    def _attack_prompt(self, prompt: str) -> str:
         """Apply synonym replacement to natural language prompt."""
         tokens = word_tokenize(prompt)
         pos_tags = pos_tag(tokens)
@@ -41,7 +41,7 @@ class SynonymAttack(BaseAttack):
         for word, pos in pos_tags:
             if (pos[:2] in self.replaceable_pos and 
                 word.lower() not in self.stop_words and
-                random.random() < self.replacement_probability):
+                random.random() < self.config['replacement_probability']):
                 synonym = self._find_synonym(word, pos)
                 modified_tokens.append(synonym if synonym else word)
             else:
@@ -49,7 +49,7 @@ class SynonymAttack(BaseAttack):
         
         return self._reconstruct_text(modified_tokens)
     
-    def attack_code_comments(self, code: str) -> str:
+    def _attack_code_comments(self, code: str) -> str:
         """Apply synonym replacement to docstring comments while preserving code."""
         # Pattern to find triple-quoted strings (both single and double quotes)
         docstring_pattern = r'(\'\'\'[\s\S]*?\'\'\'|\"\"\"[\s\S]*?\"\"\")'
@@ -97,7 +97,7 @@ class SynonymAttack(BaseAttack):
             return word
         
         # Select a random synonym
-        num_synonyms = min(len(synonyms), self.max_synonyms)
+        num_synonyms = min(len(synonyms), self.config['max_synonyms'])
         return random.choice(synonyms[:num_synonyms])
     
     def _get_wordnet_pos(self, treebank_tag: str) -> Optional[str]:
