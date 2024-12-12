@@ -67,7 +67,7 @@ class AttackFramework:
     #             prompt += f"assert {problem['entry_point']}({input_case}) == {output_case}\n"
     #         return prompt
     
-    def run_attack(self, sample_indices: Optional[List[int]] = None, save_adv_prompt_path: str = None) -> Dict[str, Any]:
+    def run_attack(self, sample_indices: Optional[List[int]] = None, save_prompt: str = None) -> Dict[str, Any]:
         """
         Run attack pipeline on selected problems.
         
@@ -79,10 +79,6 @@ class AttackFramework:
         Returns:
             Dictionary containing attack results and evaluation metrics
         """
-        # Set up temp directories for outputs
-        # temp_dir = tempfile.mkdtemp()
-        # original_path = os.path.join(temp_dir, "original_generations.jsonl")
-        # adversarial_path = os.path.join(temp_dir, "adversarial_generations.jsonl")
         
         # Track generations
         original_generations = []
@@ -121,56 +117,19 @@ class AttackFramework:
                 "prompt": adversarial_prompt,
             })
 
-        if save_adv_prompt_path:
-            save_adv_prompt = os.path.join(save_adv_prompt_path, "adversarial_prompts.jsonl")
-            save_ori_prompt = os.path.join(save_adv_prompt_path, "original_prompts.jsonl")
+        if save_prompt:
+            save_adv_prompt = os.path.join(save_prompt, "adversarial_prompts.jsonl")
+            save_ori_prompt = os.path.join(save_prompt, "original_prompts.jsonl")
             with open(save_adv_prompt, 'w') as f:
                 for adv in adversarial_generations:
                     f.write(json.dumps(adv) + '\n')
             with open(save_ori_prompt, 'w') as f:
                 for ori in original_generations:
                     f.write(json.dumps(ori) + '\n')
+        
+        # Evaluate code generations
 
-        # # Write generations to files
-        # write_jsonl(original_path, original_generations)
-        # write_jsonl(adversarial_path, adversarial_generations)
-        
-        # Run evaluation
-        # results = evaluate_code_generations(
-        #     original_generations=original_generations,
-        #     adversarial_generations=adversarial_generations,
-        #     dataset=self.dataset,
-        #     mini=self.mini
-        # )
-        
-        # # Add attack details to results
-        # results["attack_details"] = {
-        #     "method": self.attack_method,
-        #     "config": self.attack_config,
-        #     "dataset": self.dataset,
-        #     "num_samples": len(problems_to_attack)
-        # }
-        
-        # # Add generation details
-        # results["generations"] = {
-        #     task_id: {
-        #         "original": {
-        #             "prompt": orig["prompt"],
-        #             "completion": orig["completion"],
-        #             "entry_point": orig["entry_point"]
-        #         },
-        #         "adversarial": {
-        #             "prompt": adv["prompt"],
-        #             "completion": adv["completion"],
-        #             "entry_point": adv["entry_point"]
-        #         }
-        #     }
-        #     for task_id, orig, adv in zip(
-        #         [g["task_id"] for g in original_generations],
-        #         original_generations,
-        #         adversarial_generations
-        #     )
-        # }
+        # results = evaluate_code_generations(...)
         results = []
         
         return results
