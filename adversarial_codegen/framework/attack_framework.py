@@ -121,6 +121,8 @@ class AttackFramework:
             })
 
         if save_prompts:
+            if not os.path.exists(save_prompts):
+                os.makedirs(save_prompts)
             save_adv_prompt = os.path.join(save_prompts, "adversarial_prompts.jsonl")
             save_ori_prompt = os.path.join(save_prompts, "original_prompts.jsonl")
             with open(save_adv_prompt, 'w') as f:
@@ -134,6 +136,8 @@ class AttackFramework:
         adversarial_results = evaluator(adversarial_generations)
         
         if save_results:
+            if not os.path.exists(save_results):
+                os.makedirs(save_results)
             save_adv_results = os.path.join(save_results, "adversarial_results.json")
             save_ori_results = os.path.join(save_results, "original_results.json")
             with open(save_adv_results, 'w') as f:
@@ -150,7 +154,8 @@ if __name__ == "__main__":
     attack_config = {
         "replacement_probability": 0.15,
         "max_synonyms": 3,
-        "input_type": "prompt"
+        "input_type": "prompt",
+        "seed": 42
     }
     attack_framework = AttackFramework(model=model, attack_method="synonym", attack_config=attack_config, dataset="mbpp")
     _, _ = attack_framework.run_attack(save_adv_prompt_path="/home/sfang9/workshop/aisec/adversarial-attack-nlp")
