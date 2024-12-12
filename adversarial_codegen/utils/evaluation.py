@@ -141,22 +141,20 @@ def evaluator(
     gt_time_limit_factor: float = DEFAULT_GT_TIME_LIMIT_FACTOR,
     mini: bool = False,
     noextreme: bool = False,
-    version: str = "default",
-    output_dir: Optional[str] = None,
-    result_file: Optional[str] = None,
+    version: str = "default"
 ):
     
     assert samples is not None, "No samples provided"
 
     n_workers = parallel or max(1, multiprocessing.cpu_count() // 2)
 
-    if result_file is None:
-        print("Warning: No result file specified. Results are only exihibted.")
-    else:
+    # TODO: We can further improve the logic here: Move to attack_framework.py
+    # if result_file is None:
+    #     print("Warning: No result file specified. Results are only exihibted.")
+    # else:
         # get the result_path from the result_file
-        # TODO: We can further improve the logic here
-        assert output_dir is not None, "You should provide output_dir"
-        result_path = os.path.join(output_dir, result_file)
+        # assert output_dir is not None, "You should provide output_dir"
+        # result_path = os.path.join(output_dir, result_file)
 
 
     if dataset == "humaneval":
@@ -185,7 +183,7 @@ def evaluator(
     }
 
     samples = add_identifier(samples)
-    breakpoint()
+
     with ProcessPoolExecutor(max_workers=n_workers) as executor:
         futures = []
         completion_id = Counter()
@@ -332,24 +330,8 @@ def evaluator(
             cprint(f"{k}:\t{v:.3f}", "green")
         results["pass_at_k"]["plus"] = pass_at_k
 
-    # save results
-    if os.path.isfile(result_path) and i_just_wanna_run:
-        decision = ""
-        while decision.lower() not in ["y", "n"]:
-            print(f"{result_path} already exists. Press [Y/N] to overwrite or exit...")
-            decision = input()
+    return results
 
-        if decision.lower() == "y":
-            # mv the file to a backup
-            new_path = result_path + ".bak"
-            while os.path.isfile(new_path):
-                new_path += ".bak"
-            os.rename(result_path, new_path)
-            print(f"Backup {result_path} to {new_path}")
-
-    if not os.path.isfile(result_path):
-        with open(result_path, "w") as f:
-            json.dump(results, f)
 
 # Example usage
 if __name__ == "__main__":
@@ -371,12 +353,16 @@ if __name__ == "__main__":
             "solution": "def similar_elements(list1, list2):\n    return set(list1).intersection(set(list2))\n",
         },
     ]
+    test_file = "/home/sfang9/workshop/aisec/adversarial-attack-nlp/original_prompts.jsonl"
+    with open(test_file, "r") as f:
+        generations = [json.loads(line) for line in f]
+    
     
     # Run evaluation
     results = evaluator(
         dataset=dataset,
         samples=generations,
-        parallel=1,
-        output_dir="./",
-        result_file="results.json",
     )
+
+    print(len(results["eval"]))
+    print(results["eval"]["Mbpp/2"])

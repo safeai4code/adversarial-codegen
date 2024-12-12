@@ -1,7 +1,9 @@
-from typing import Dict, Any, List, Optional
 import os
 import json
-import tempfile
+from typing import Dict, Any, List, Optional
+
+
+from tqdm import tqdm
 from evalplus.data import (
     get_human_eval_plus, 
     get_mbpp_plus,
@@ -10,7 +12,7 @@ from evalplus.data import (
 from adversarial_codegen.models.base_model import BaseModel
 from adversarial_codegen.framework.base_attack import BaseAttack 
 from adversarial_codegen.attacks.synonym_attack import SynonymAttack
-from adversarial_codegen.utils.evaluation import evaluate_code_generations
+from adversarial_codegen.utils.evaluation import evaluator
 
 class AttackFramework:
     def __init__(self, 
@@ -67,14 +69,15 @@ class AttackFramework:
     #             prompt += f"assert {problem['entry_point']}({input_case}) == {output_case}\n"
     #         return prompt
     
-    def run_attack(self, sample_indices: Optional[List[int]] = None, save_prompt: str = None) -> Dict[str, Any]:
+    def run_attack(self, sample_indices: Optional[List[int]] = None, save_prompts: str = None, save_results: str = None):
         """
         Run attack pipeline on selected problems.
         
         Args:
             sample_indices: Optional list of problem indices to attack.
-                          If None, all problems will be used.
-            save_adv_prompt: Optional path to save adversarial prompts to a file.
+                            If None, all problems will be used.
+            save_prompts: Optional path to save prompts.
+            save_results: Optional path to save results.
         
         Returns:
             Dictionary containing attack results and evaluation metrics
@@ -93,7 +96,7 @@ class AttackFramework:
         
         # breakpoint()
 
-        for task_id, problem in problems_to_attack:
+        for task_id, problem in tqdm(problems_to_attack):
             # Get appropriate prompt for dataset type
             # prompt = self._get_problem_prompt(problem)
             prompt = problem["prompt"]
@@ -107,19 +110,19 @@ class AttackFramework:
             # Format for evaluation
             original_generations.append({
                 "task_id": task_id,
-                "completion": original_output,
+                "solution": original_output,
                 "prompt": prompt,
             })
             
             adversarial_generations.append({
                 "task_id": task_id,
-                "completion": adversarial_output,
+                "solution": adversarial_output,
                 "prompt": adversarial_prompt,
             })
 
-        if save_prompt:
-            save_adv_prompt = os.path.join(save_prompt, "adversarial_prompts.jsonl")
-            save_ori_prompt = os.path.join(save_prompt, "original_prompts.jsonl")
+        if save_prompts:
+            save_adv_prompt = os.path.join(save_prompts, "adversarial_prompts.jsonl")
+            save_ori_prompt = os.path.join(save_prompts, "original_prompts.jsonl")
             with open(save_adv_prompt, 'w') as f:
                 for adv in adversarial_generations:
                     f.write(json.dumps(adv) + '\n')
@@ -127,21 +130,27 @@ class AttackFramework:
                 for ori in original_generations:
                     f.write(json.dumps(ori) + '\n')
         
-        # Evaluate code generations
-
-        # results = evaluate_code_generations(...)
-        results = []
+        original_results = evaluator(original_generations)
+        adversarial_results = evaluator(adversarial_generations)
         
-        return results
+        if save_results:
+            save_adv_results = os.path.join(save_results, "adversarial_results.json")
+            save_ori_results = os.path.join(save_results, "original_results.json")
+            with open(save_adv_results, 'w') as f:
+                json.dump(adversarial_results, f)
+            with open(save_ori_results, 'w') as f:
+                json.dump(original_results, f)
+        
+        return original_results, adversarial_results
 
 
 if __name__ == "__main__":
     from adversarial_codegen.models import Models
     model = Models.load("codellama", model_path="/home/sfang9/workshop/llms/original_llms/Llama-3.2-1B")
     attack_config = {
-        "replacement_probability": 0.25,
+        "replacement_probability": 0.15,
         "max_synonyms": 3,
         "input_type": "prompt"
     }
     attack_framework = AttackFramework(model=model, attack_method="synonym", attack_config=attack_config, dataset="mbpp")
-    results = attack_framework.run_attack(save_adv_prompt_path="/home/sfang9/workshop/aisec/adversarial-attack-nlp")
+    _, _ = attack_framework.run_attack(save_adv_prompt_path="/home/sfang9/workshop/aisec/adversarial-attack-nlp")
