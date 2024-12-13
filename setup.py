@@ -37,6 +37,19 @@ REQUIRED_PACKAGES = [
     'huggingface-hub>=0.26.3',
     'nltk>=3.6.0',
     'evalplus',
+    'attrs>=21.2.0',
+    'certifi>=2020.6.20',
+    'chardet>=4.0.0',
+    'click>=8.0.3',
+    'cryptography>=3.4.8',
+    'idna>=3.3',
+    'Jinja2>=3.0.3',
+    'jsonschema>=3.2.0',
+    'MarkupSafe>=2.0.1',
+    'PyYAML>=5.4.1',
+    'requests>=2.25.1',
+    'six>=1.16.0',
+    'urllib3>=1.26.5'
 ]
 
 # Testing dependencies
@@ -50,6 +63,9 @@ EXTRA_PACKAGES = {
     'dev': TEST_PACKAGES + [
         'tqdm>=4.67.1',
         'psutil>=6.1.0',
+        'Pillow>=9.0.1',
+        'pyrsistent>=0.18.1',
+        'python-dateutil>=2.8.1',
     ]
 }
 
