@@ -1,29 +1,38 @@
 from setuptools import setup, find_packages
-import ssl
-import nltk
+from setuptools.command.install import install
+from setuptools.command.develop import develop
+from setuptools.command.egg_info import egg_info
 
-# Sometimes NLTK downloads fail due to SSL certificate issues
-try:
-    _create_unverified_https_context = ssl._create_unverified_context
-except AttributeError:
-    pass
-else:
-    ssl._create_default_https_context = _create_unverified_https_context
-
-def download_nltk_data():
-    """Download required NLTK data packages."""
-    nltk_data = [
-        'punkt', 'averaged_perceptron_tagger', 'wordnet', 'stopwords', 
-        'punkt_tab', 'averaged_perceptron_tagger_eng',
-    ]
-    for package in nltk_data:
+class PostInstallCommand(install):
+    """Post-installation for installation mode."""
+    def run(self):
+        install.run(self)
+        # We need to import nltk only after it's installed
+        import nltk
         try:
-            nltk.download(package, quiet=True)
+            nltk_data = [
+                'punkt', 'averaged_perceptron_tagger', 'wordnet', 'stopwords', 
+                'punkt_tab', 'averaged_perceptron_tagger_eng',
+            ]
+            for package in nltk_data:
+                nltk.download(package, quiet=True)
         except Exception as e:
-            print(f"Error downloading {package}: {str(e)}")
+            print(f"Error downloading NLTK data: {str(e)}")
 
-# Download NLTK data during setup
-download_nltk_data()
+class PostDevelopCommand(develop):
+    """Post-installation for development mode."""
+    def run(self):
+        develop.run(self)
+        import nltk
+        try:
+            nltk_data = [
+                'punkt', 'averaged_perceptron_tagger', 'wordnet', 'stopwords', 
+                'punkt_tab', 'averaged_perceptron_tagger_eng',
+            ]
+            for package in nltk_data:
+                nltk.download(package, quiet=True)
+        except Exception as e:
+            print(f"Error downloading NLTK data: {str(e)}")
 
 # Core dependencies required for the project
 REQUIRED_PACKAGES = [
@@ -91,4 +100,8 @@ setup(
     install_requires=REQUIRED_PACKAGES,
     extras_require=EXTRA_PACKAGES,
     include_package_data=True,
+    cmdclass={
+        'install': PostInstallCommand,
+        'develop': PostDevelopCommand,
+    },
 )
