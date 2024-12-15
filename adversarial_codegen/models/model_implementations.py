@@ -120,7 +120,7 @@ class CodeLLaMAModel(BaseModel):
 
 
 class DynamicQuantizedModel(BaseModel):
-    def __init__(self, model_path: str, quantized_path: str, **kwargs):
+    def __init__(self, model_path: str, **kwargs):
         """
         Initialize the dynamically quantized model.
         
@@ -130,7 +130,7 @@ class DynamicQuantizedModel(BaseModel):
             **kwargs: Additional arguments
         """
         super().__init__(model_path, **kwargs)
-        self.quantized_path = quantized_path
+        self.quantized_path = kwargs.get("quantized_path")
         if not os.path.exists(self.quantized_path):
             raise ValueError(f"Quantized model file not found: {self.quantized_path}")
         self.load()

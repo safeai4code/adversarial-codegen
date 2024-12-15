@@ -58,7 +58,8 @@ REQUIRED_PACKAGES = [
     'PyYAML>=5.4.1',
     'requests>=2.25.1',
     'six>=1.16.0',
-    'urllib3>=1.26.5'
+    'urllib3>=1.26.5',
+    'fire>=0.5.0',
 ]
 
 # Testing dependencies
@@ -103,5 +104,10 @@ setup(
     cmdclass={
         'install': PostInstallCommand,
         'develop': PostDevelopCommand,
+    },
+    entry_points={
+        'console_scripts': [
+            'adversarial-codegen=adversarial_codegen.run:main',
+        ],
     },
 )
