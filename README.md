@@ -42,9 +42,109 @@ Our framework provides:
 - 👥 HumanEval / HumanEval Plus
 - 📘 MBPP / MBPP Plus
 
-<!--- 
 ## ⚙️ Installation
 ```bash
+# Clone the repository
 git clone https://github.com/yourusername/adversarial-codegen
 cd adversarial-codegen
-pip install -r requirements.txt
+
+# Install the package
+pip install -e .
+```
+
+## 🎮 Usage
+After installation, you can use the main functionality through the command-line interface:
+```bash
+adversarial-codegen attack [OPTIONS]
+```
+### 🔑 Required Arguments
+
+- model_path: 📂 Path to the original model
+- save_prompts: 💾 Directory path to save generated prompts
+- save_results: 📊 Directory path to save attack results
+
+### ⚡ Optional Arguments
+
+- model_type: 🤖 Type of model (default: "codellama")
+- quantized_path: 📦 Path to quantized model (optional)
+- quantized_type: 🔧 Type of quantized model (optional)
+- dataset: 📚 Dataset to use ("humaneval" or "mbpp", default: "mbpp")
+- attack_method: 🎯 Type of attack (default: "synonym")
+- replacement_prob: 🎲 Probability of replacement (default: 0.15)
+- max_synonyms: 🔢 Maximum synonyms to use (default: 3)
+- input_type: 📝 Type of input ("prompt" or "code", default: "prompt")
+- seed: 🌱 Random seed for reproducibility
+- mini: 🔍 Use mini version of dataset (flag)
+
+## 📝 Examples
+
+### 1. 🔰 Basic usage with default parameters:
+```bash
+adversarial-codegen attack \
+    --model_path /path/to/model \
+    --save_prompts /path/to/save/prompts \
+    --save_results /path/to/save/results
+```
+
+### 2. 🚀 Advanced usage with custom parameters:
+```bash
+python run.py attack \
+    --model_path /path/to/model \
+    --model_type codellama \
+    --dataset mbpp \
+    --attack_method synonym \
+    --replacement_prob 0.2 \
+    --max_synonyms 5 \
+    --seed 42 \
+    --save_prompts /path/to/save/prompts \
+    --save_results /path/to/save/results
+```
+
+### 3. 🔧 Using a quantized model:
+```bash
+python run.py attack \
+    --model_path /path/to/original/model \
+    --quantized_path /path/to/quantized/model \
+    --quantized_type dynamic \
+    --save_prompts /path/to/save/prompts \
+    --save_results /path/to/save/results
+```
+
+## 📤 Output
+The tool generates two types of outputs:
+
+1. 📝 Prompts: Saved to the directory specified by --save_prompts
+- Original prompts
+- Adversarially modified prompts
+
+
+2. 📊 Results: Saved to the directory specified by --save_results
+- Model responses to original prompts
+- Model responses to adversarial prompts
+- Performance metrics and analysis (Now only include pass rate, visual statistics will come soon!)
+
+
+## 👥 Contributing
+We welcome contributions! Please feel free to submit a Pull Request.
+For questions or suggestions, please contact:
+
+- 📧 Email: <a href="mailto:fangsen1996@gmail.com">fangsen1996@gmail.com</a>/<a href="mailto:sfang9@ncsu.edu">sfang9@ncsu.edu</a>
+- 💬 Open an issue
+- 🔀 Submit a PR
+
+## 🙏 Acknowledgments
+This project builds upon and is inspired by several excellent works in the field:
+
+- 🤗 HuggingFace Transformers - For transformer models and utilities
+- 📚 MBPP Dataset - For evaluation datasets
+- 🧪 HumanEval - For evaluation protocols and datasets
+- ⚡ PEFT - For efficient model fine-tuning methods
+- 🔍 EvalPlus - For enhanced evaluation methods
+
+Special thanks to all these projects that made our work possible.
+
+## 📄 License
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+
+
