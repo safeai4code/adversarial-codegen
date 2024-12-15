@@ -23,7 +23,7 @@ class AdversarialCodeGen:
         
         Args:
             model_path: Path to the original model.
-            model_type: Type of model (currently supports 'Casual LLMs').
+            model_type: Type of model (currently supports 'Causal LLMs').
             quantized_path: Path to quantized model (optional).
             quantized_type: Type of quantized model (optional) and only used if quantized_path is provided. Choices are 'dynamic'.
             dataset: Dataset to use ('humaneval' or 'mbpp'). Default is 'mbpp'.
