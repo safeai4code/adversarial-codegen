@@ -88,7 +88,7 @@ adversarial-codegen attack \
 
 ### 2. 🚀 Advanced usage with custom parameters:
 ```bash
-python run.py attack \
+adversarial-codegen attack attack \
     --model_path /path/to/model \
     --model_type codellama \
     --dataset mbpp \
@@ -102,7 +102,7 @@ python run.py attack \
 
 ### 3. 🔧 Using a quantized model:
 ```bash
-python run.py attack \
+adversarial-codegen attack attack \
     --model_path /path/to/original/model \
     --quantized_path /path/to/quantized/model \
     --quantized_type dynamic \
