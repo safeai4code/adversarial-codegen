@@ -7,8 +7,9 @@ class AdversarialCodeGen:
     def attack(self,
                model_path: str,
                model_type: str = "codellama",
-               quantized_path: str = None,
                quantized_type: str = None,
+               bits: int = None,
+               static_quantized_method: str = None,
                dataset: str = "mbpp",
                attack_method: str = "synonym",
                save_prompts: str = "/path/to/save",
@@ -24,8 +25,7 @@ class AdversarialCodeGen:
         Args:
             model_path: Path to the original model.
             model_type: Type of model (currently supports 'Causal LLMs').
-            quantized_path: Path to quantized model (optional).
-            quantized_type: Type of quantized model (optional) and only used if quantized_path is provided. Choices are 'dynamic'.
+            quantized_type: Type of quantized model (optional) and only used if quantized_path is provided. Choices are 'dynamic' and 'static'.
             dataset: Dataset to use ('humaneval' or 'mbpp'). Default is 'mbpp'.
             attack_method: Type of attack (currently supports 'synonym').
             save_dir: Directory to save results and prompts.
@@ -44,9 +44,24 @@ class AdversarialCodeGen:
         }
 
         # Initialize model
-        if quantized_path:
-            model = Models.load("dynamic", model_path=model_path, quantized_path=quantized_path)
+        if quantized_type == "dynamic":
+            model = Models.load("dynamic", model_path=model_path)
+        elif quantized_type == "static":
+            if bits is None:
+                print("Bits not provided, defaulting to 8 bits.")
+            if static_quantized_method is None:
+                print("Quantization method not provided, defaulting to 'bnb'.")
+            
+            # Think a way to better pass the quant_config to the model
+            # TODO: Except for the attack config, we should also have a quantization config and a generation config
+            # quant_config = {
+            #     "bits": bits,
+            #     "method": static_quantized_method
+            # }
+
+            model = Models.load("static", model_path=model_path)
         else:
+            # Non-quantized model -> original LLMs
             model = Models.load("codellama", model_path=model_path)
 
         # Initialize framework

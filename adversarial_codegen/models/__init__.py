@@ -24,3 +24,6 @@ class MagicCoderModel(MagicCoderModel): pass
 
 @ModelRegistry.register("dynamic")
 class DynamicQuantizedModel(DynamicQuantizedModel): pass
+
+@ModelRegistry.register("static")
+class StaticQuantizedModel(StaticQuantizedModel): pass

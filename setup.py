@@ -60,6 +60,10 @@ REQUIRED_PACKAGES = [
     'six>=1.16.0',
     'urllib3>=1.26.5',
     'fire>=0.5.0',
+    'bitsandbytes>=0.41.1',
+    'optimum>=1.16.1',
+    'auto-gptq>=0.5.0',
+    'autoawq>=0.1.0',
 ]
 
 # Testing dependencies
@@ -76,6 +80,24 @@ EXTRA_PACKAGES = {
         'Pillow>=9.0.1',
         'pyrsistent>=0.18.1',
         'python-dateutil>=2.8.1',
+    ],
+    'quant': [
+        'bitsandbytes>=0.41.1',
+        'optimum>=1.16.1',
+        'auto-gptq>=0.5.0',
+        'autoawq>=0.1.0',
+    ],
+    # Full installation including all dependencies
+    'all': TEST_PACKAGES + [
+        'tqdm>=4.67.1',
+        'psutil>=6.1.0',
+        'Pillow>=9.0.1',
+        'pyrsistent>=0.18.1',
+        'python-dateutil>=2.8.1',
+        'bitsandbytes>=0.41.1',
+        'optimum>=1.16.1',
+        'auto-gptq>=0.5.0',
+        'autoawq>=0.1.0',
     ]
 }
 
