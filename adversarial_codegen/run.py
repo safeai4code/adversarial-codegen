@@ -1,74 +1,167 @@
 import fire
+from dataclasses import dataclass, asdict
+from typing import Optional, Dict, Any, Literal
+
+import torch
 from adversarial_codegen.models import Models
 from adversarial_codegen.framework.attack_framework import AttackFramework
 
 
+@dataclass
+class AttackConfig:
+    """Configuration for attack parameters"""
+    replacement_probability: float = 0.15
+    max_synonyms: int = 3
+    input_type: str = "prompt"
+    seed: Optional[int] = None
+
+
 class AdversarialCodeGen:
-    def attack(self,
-               model_path: str,
-               model_type: str = "codellama",
-               quantized_type: str = None,
-               bits: int = None,
-               static_quantized_method: str = None,
-               dataset: str = "mbpp",
-               attack_method: str = "synonym",
-               save_prompts: str = "/path/to/save",
-               save_results: str = "/path/to/save",
-               replacement_prob: float = 0.15,
-               max_synonyms: int = 3,
-               input_type: str = "prompt",
-               seed: int = None,
-               mini: bool = False):
+    @staticmethod
+    def _create_model_config(
+        model_type: str,
+        quantized_type: Optional[str],
+        quant_params: dict,
+        gen_params: dict
+    ) -> dict:
+        """Create model configuration including quantization and generation settings"""
+        model_config = {}
+        
+        # Add generation config if provided
+        if gen_params:
+            model_config["generation_config"] = {
+                "num_return_sequences": gen_params.get("num_return_sequences", 1),
+                "max_length": gen_params.get("max_length", 512),
+                "temperature": gen_params.get("temperature", 0.7),
+                "top_p": gen_params.get("top_p", 0.95),
+                "num_beams": gen_params.get("num_beams", 10),
+                "use_beam_search": gen_params.get("use_beam_search", False)
+            }
+
+        # Add quantization config if using quantization
+        if quantized_type == "static":
+            model_config["quant_config"] = {
+                "method": quant_params.get("method", "bnb"),
+                "bits": quant_params.get("bits", 8),
+                "compute_dtype": torch.float16,
+                "quant_type": quant_params.get("quant_type", "nf4"),
+                "dataset": quant_params.get("dataset", "c4")
+            }
+        elif quantized_type == "dynamic":
+            model_config["quant_config"] = {
+                "bits": quant_params.get("bits", 8),
+                "quantize_embeddings": quant_params.get("quantize_embeddings", False)
+            }
+
+        return model_config
+
+    def attack(
+        self,
+        model_path: str,
+        model_type: str = "codellama",
+        quantized_type: Optional[str] = None,
+        dataset: str = "mbpp",
+        attack_method: str = "synonym",
+        save_prompts: str = "/path/to/save",
+        save_results: str = "/path/to/save",
+        mini: bool = False,
+        # Attack parameters
+        replacement_prob: float = 0.15,
+        max_synonyms: int = 3,
+        input_type: str = "prompt",
+        seed: Optional[int] = None,
+        # Quantization parameters
+        quant_method: Literal["bnb", "gptq", "awq"] = "bnb",
+        quant_bits: Literal[4, 8] = 8,
+        quant_type: str = "nf4",
+        quantize_embeddings: bool = False,
+        # Generation parameters
+        num_return_sequences: int = 1,
+        max_length: int = 512,
+        temperature: float = 0.7,
+        top_p: float = 0.95,
+        num_beams: int = 10,
+        use_beam_search: bool = False
+    ):
         """
-        Run adversarial attack on code.
+        Run adversarial attack on code with detailed parameter control.
         
         Args:
-            model_path: Path to the original model.
-            model_type: Type of model (currently supports 'Causal LLMs').
-            quantized_type: Type of quantized model (optional) and only used if quantized_path is provided. Choices are 'dynamic' and 'static'.
-            dataset: Dataset to use ('humaneval' or 'mbpp'). Default is 'mbpp'.
-            attack_method: Type of attack (currently supports 'synonym').
-            save_dir: Directory to save results and prompts.
-            replacement_prob: Probability of replacement for synonym attack.
-            max_synonyms: Maximum number of synonyms to use.
-            input_type: Type of input (currently supports 'prompt' and 'code').
-            seed: Random seed.
-            mini: Whether to use mini version of dataset.
+            # Base parameters
+            model_path: Path to the model,
+            model_type: Type of model (codellama, starcoder, etc.) # TODO: Use decoder-only, encoder-only, and encoeer-decoder to specify model type in the future.
+            quantized_type: Type of quantization (None, "static", or "dynamic").
+            dataset: Dataset to use, choices=["mbpp", "humaneval"].
+            attack_method: Type of attack, choices=["synonym", "random upper", "translate-and-back"].
+            save_prompts: Path to save prompts.
+            save_results: Path to save results.
+            mini: Use mini version of dataset.
+            
+            # Attack parameters
+            replacement_prob: Probability of replacement.
+            max_synonyms: Maximum number of synonyms.
+            input_type: Type of input.
+            seed: Random seed for reproducibility.
+            
+            # Quantization parameters
+            quant_method: Static quantization method. Choices=["bnb", "gptq", "awq"].
+            quant_bits: Number of bits for quantization. Note: Only 4 and 8 are supported for static quantization and 8 for dynamic quantization.
+            quant_type: Quantization type for 4-bit static quantization. Choices=["nf4", "nf4_2", "nf4_3"].
+            quantize_embeddings: Whether to quantize embeddings (for dynamic).
+            
+            # Generation parameters
+            num_return_sequences: Number of responses to generate. Note: if set to 1, greedy decoding is used.
+            max_length: Maximum generation length.
+            temperature: Temperature for sampling.
+            top_p: Top-p for sampling, generally used with temperature.
+            num_beams: Number of beams for beam search. Note: Only used if use_beam_search is True and should be equal or greater than num_return_sequences.
+            use_beam_search: Whether to use beam search.
         """
-        # Configure attack
-        attack_config = {
-            "replacement_probability": replacement_prob,
-            "max_synonyms": max_synonyms,
-            "input_type": input_type,
-            "seed": seed
+        # Create configurations
+        attack_config = AttackConfig(
+            replacement_probability=replacement_prob,
+            max_synonyms=max_synonyms,
+            input_type=input_type,
+            seed=seed
+        )
+
+        # Set up quantization and generation parameters
+        quant_params = {
+            "method": quant_method,
+            "bits": quant_bits,
+            "quant_type": quant_type,
+            "quantize_embeddings": quantize_embeddings
+        }
+        
+        gen_params = {
+            "num_return_sequences": num_return_sequences,
+            "max_length": max_length,
+            "temperature": temperature,
+            "top_p": top_p,
+            "num_beams": num_beams,
+            "use_beam_search": use_beam_search
         }
 
-        # Initialize model
-        if quantized_type == "dynamic":
-            model = Models.load("dynamic", model_path=model_path)
-        elif quantized_type == "static":
-            if bits is None:
-                print("Bits not provided, defaulting to 8 bits.")
-            if static_quantized_method is None:
-                print("Quantization method not provided, defaulting to 'bnb'.")
-            
-            # Think a way to better pass the quant_config to the model
-            # TODO: Except for the attack config, we should also have a quantization config and a generation config
-            # quant_config = {
-            #     "bits": bits,
-            #     "method": static_quantized_method
-            # }
+        # Create model configuration
+        model_config = self._create_model_config(
+            model_type=model_type,
+            quantized_type=quantized_type,
+            quant_params=quant_params,
+            gen_params=gen_params
+        )
 
-            model = Models.load("static", model_path=model_path)
-        else:
-            # Non-quantized model -> original LLMs
-            model = Models.load("codellama", model_path=model_path)
+        # Initialize model with configurations
+        model = Models.load(
+            model_type if quantized_type is None else quantized_type,
+            model_path=model_path,
+            **model_config
+        )
 
         # Initialize framework
         framework = AttackFramework(
             model=model,
             attack_method=attack_method,
-            attack_config=attack_config,
+            attack_config=asdict(attack_config),
             dataset=dataset,
             mini=mini
         )
