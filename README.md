@@ -65,21 +65,40 @@ adversarial-codegen attack [OPTIONS]
 
 ### ⚡ Optional Arguments
 
-- model_type: 🤖 Type of model (default: "codellama")
-- quantized_path: 📦 Path to quantized model (optional)
+#### 🤖 Model Configuration
+- model_type: Type of model (default: "codellama")
 - quantized_type: 🔧 Type of quantized model (optional)
+
+#### 📚 Dataset Options
 - dataset: 📚 Dataset to use ("humaneval" or "mbpp", default: "mbpp")
-- attack_method: 🎯 Type of attack (default: "synonym")
-- replacement_prob: 🎲 Probability of replacement (default: 0.15)
-- max_synonyms: 🔢 Maximum synonyms to use (default: 3)
-- input_type: 📝 Type of input ("prompt" or "code", default: "prompt")
-- seed: 🌱 Random seed for reproducibility
 - mini: 🔍 Use mini version of dataset (flag)
+
+#### 🎯 Attack Parameters
+- attack_method: Type of attack ("synonym", "random upper", "translate-and-back")
+- replacement_prob: Probability of replacement (default: 0.15)
+- max_synonyms: Maximum number of synonyms (default: 3)
+- input_type: Type of input (default: "prompt")
+- seed: Random seed for reproducibility
+
+#### 📦 Quantization Parameters
+- quant_method: Static quantization method ("bnb", "gptq", "awq")
+- quant_bits: Number of bits for quantization (4 or 8)
+- quant_type: Quantization type for 4-bit static quantization ("nf4", "nf4_2", "nf4_3")
+- quantize_embeddings: Whether to quantize embeddings (for dynamic quantization)
+
+#### ⚙️ Generation Parameters
+- num_return_sequences: Number of responses to generate (default: 1)
+- max_length: Maximum generation length (default: 512)
+- temperature: Temperature for sampling (default: 0.7)
+- top_p: Top-p for sampling (default: 0.95)
+- num_beams: Number of beams for beam search (default: 10)
+- use_beam_search: Whether to use beam search (default: False)
 
 ## 📝 Examples
 
-### 1. 🔰 Basic usage with default parameters:
+### 1. 🔰 Basic Usage:
 ```bash
+# Attack original LLMs
 adversarial-codegen attack \
     --model_path /path/to/model \
     --save_prompts /path/to/save/prompts \
@@ -88,24 +107,42 @@ adversarial-codegen attack \
 
 ### 2. 🚀 Advanced usage with custom parameters:
 ```bash
-adversarial-codegen attack attack \
+# Attack LLMs with a specific adversarial attack method (synonym) and generation method (temperature sampling).
+adversarial-codegen attack \
     --model_path /path/to/model \
-    --model_type codellama \
     --dataset mbpp \
     --attack_method synonym \
     --replacement_prob 0.2 \
     --max_synonyms 5 \
+    --temperature 0.8 \
+    --top_p 0.9 \
+    --num_beams 5 \
     --seed 42 \
     --save_prompts /path/to/save/prompts \
     --save_results /path/to/save/results
 ```
 
-### 3. 🔧 Using a quantized model:
+### 3. 🔧 Using Static Quantization:
 ```bash
-adversarial-codegen attack attack \
-    --model_path /path/to/original/model \
-    --quantized_path /path/to/quantized/model \
+# Attack LLMs with static quant (4-bit quant achieved by bnb)
+adversarial-codegen attack \
+    --model_path /path/to/model \
+    --quantized_type static \
+    --quant_method bnb \
+    --quant_bits 4 \
+    --quant_type nf4 \
+    --save_prompts /path/to/save/prompts \
+    --save_results /path/to/save/results
+```
+
+### 4. 🔄 Using Dynamic Quantization:
+```bash
+# Attack LLMs with 8-bit quant
+adversarial-codegen attack \
+    --model_path /path/to/model \
     --quantized_type dynamic \
+    --quant_bits 8 \
+    --quantize_embeddings True \ # Generally don't quantize embedding layer
     --save_prompts /path/to/save/prompts \
     --save_results /path/to/save/results
 ```
