@@ -72,7 +72,7 @@ class CharacterCaseAttack(BaseAttack):
         return ''.join(result)
 
     def _attack_code_comments(self, code: str) -> str:
-        """Apply character case transformation to docstring comments while preserving code."""
+        """Apply character case transformation to docstrings while preserving code."""
         # Pattern to find triple-quoted strings (both single and double quotes)
         docstring_pattern = r'(\'\'\'[\s\S]*?\'\'\'|\"\"\"[\s\S]*?\"\"\")'
         
