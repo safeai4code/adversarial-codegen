@@ -12,6 +12,7 @@ from evalplus.data import (
 from adversarial_codegen.models.base_model import BaseModel
 from adversarial_codegen.framework.base_attack import BaseAttack 
 from adversarial_codegen.attacks.synonym_attack import SynonymAttack
+from adversarial_codegen.attacks.char_attack import CharacterCaseAttack
 from adversarial_codegen.utils.evaluation import evaluator
 
 class AttackFramework:
@@ -51,23 +52,13 @@ class AttackFramework:
     def _initialize_attacker(self) -> BaseAttack:
         """Initialize the appropriate attack method."""
         if self.attack_method == "synonym":
+            print("Using synonym attack")
             return SynonymAttack(config=self.attack_config)
-        raise ValueError(f"Unknown attack method: {self.attack_method}")
-    
-    # def _get_problem_prompt(self, problem: Dict[str, Any]) -> str:
-    #     """Get the appropriate prompt based on dataset type."""
-    #     if self.dataset == "humaneval":
-    #         return problem["prompt"]
-    #     else:  # mbpp
-    #         # MBPP format includes test cases in the prompt
-    #         prompt = problem["prompt"] + "\n\n"
-    #         # Add test cases as part of the prompt
-    #         for i, (input_case, output_case) in enumerate(
-    #             zip(problem["test_inputs"], problem["test_outputs"]), 1
-    #         ):
-    #             prompt += f"# Test Case {i}:\n"
-    #             prompt += f"assert {problem['entry_point']}({input_case}) == {output_case}\n"
-    #         return prompt
+        elif self.attack_method == "char":
+            print("Using character case attack")
+            return CharacterCaseAttack(config=self.attack_config)
+        else:
+            raise ValueError(f"Unknown attack method: {self.attack_method}")
     
     def run_attack(self, sample_indices: Optional[List[int]] = None, save_prompts: str = None, save_results: str = None):
         """
