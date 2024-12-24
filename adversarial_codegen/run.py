@@ -10,8 +10,13 @@ from adversarial_codegen.framework.attack_framework import AttackFramework
 @dataclass
 class AttackConfig:
     """Configuration for attack parameters"""
+    # synonym replacement attack parameters
     replacement_probability: float = 0.15
     max_synonyms: int = 3
+    # character case attack parameters
+    char_change_probability: float = 0.5,
+    max_char_changes: int = 5,
+    # General attack parameters
     input_type: str = "prompt"
     seed: Optional[int] = None
 
@@ -68,6 +73,8 @@ class AdversarialCodeGen:
         # Attack parameters
         replacement_prob: float = 0.15,
         max_synonyms: int = 3,
+        char_change_probability: float = 0.5,
+        max_char_changes: int = 15,
         input_type: str = "prompt",
         seed: Optional[int] = None,
         # Quantization parameters
@@ -100,6 +107,8 @@ class AdversarialCodeGen:
             # Attack parameters
             replacement_prob: Probability of replacement.
             max_synonyms: Maximum number of synonyms.
+            char_change_probability: Probability of changing character case.
+            max_char_changes: Maximum number of character changes.
             input_type: Type of input.
             seed: Random seed for reproducibility.
             
@@ -121,6 +130,8 @@ class AdversarialCodeGen:
         attack_config = AttackConfig(
             replacement_probability=replacement_prob,
             max_synonyms=max_synonyms,
+            char_change_probability=char_change_probability,
+            max_char_changes=max_char_changes,
             input_type=input_type,
             seed=seed
         )
