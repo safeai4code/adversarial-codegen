@@ -5,6 +5,7 @@ from typing import Optional, Dict, Any, Literal
 import torch
 from adversarial_codegen.models import Models
 from adversarial_codegen.framework.attack_framework import AttackFramework
+from adversarial_codegen.utils import visualizer
 
 
 @dataclass
@@ -69,6 +70,7 @@ class AdversarialCodeGen:
         attack_method: str = "synonym",
         save_prompts: str = "/path/to/save",
         save_results: str = "/path/to/save",
+        visualization: bool = False,
         mini: bool = False,
         # Attack parameters
         replacement_prob: float = 0.15,
@@ -183,8 +185,9 @@ class AdversarialCodeGen:
             save_results=save_results
         )
 
-        #TODO: Next steps: Print the statistical results
-        # return {"original": original_results, "adversarial": adversarial_results}
+        # Visualize the results
+        if visualization:
+            visualizer(original_results, adversarial_results, model_path.rsplit('/', 1)[-1], save_results)
 
 def main():
     fire.Fire(AdversarialCodeGen)

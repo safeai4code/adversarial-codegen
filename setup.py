@@ -64,6 +64,7 @@ REQUIRED_PACKAGES = [
     'optimum>=1.16.1',
     'auto-gptq>=0.5.0',
     'autoawq>=0.1.0',
+    'cairosvg>=2.7.1',
 ]
 
 # Testing dependencies
