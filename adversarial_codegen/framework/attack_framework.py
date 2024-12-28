@@ -2,18 +2,20 @@ import os
 import json
 from typing import Dict, Any, List, Optional
 
-
 from tqdm import tqdm
 from evalplus.data import (
     get_human_eval_plus, 
     get_mbpp_plus,
     write_jsonl
 )
+
 from adversarial_codegen.models.base_model import BaseModel
-from adversarial_codegen.framework.base_attack import BaseAttack 
+from adversarial_codegen.framework.base_attack import BaseAttack
 from adversarial_codegen.attacks.synonym_attack import SynonymAttack
 from adversarial_codegen.attacks.char_attack import CharacterCaseAttack
+from adversarial_codegen.attacks.translation_attack import TranslationAttack
 from adversarial_codegen.utils.evaluation import evaluator
+
 
 class AttackFramework:
     def __init__(self, 
@@ -57,6 +59,9 @@ class AttackFramework:
         elif self.attack_method == "char":
             print("Using character case attack")
             return CharacterCaseAttack(config=self.attack_config)
+        elif self.attack_method == "translate":
+            print("Using translation attack")
+            return TranslationAttack(config=self.attack_config)
         else:
             raise ValueError(f"Unknown attack method: {self.attack_method}")
     
@@ -84,8 +89,6 @@ class AttackFramework:
             else [(k, v) for i, (k, v) in enumerate(self.problems.items()) 
                   if i in sample_indices]
         )
-        
-        # breakpoint()
 
         for task_id, problem in tqdm(problems_to_attack):
             # Get appropriate prompt for dataset type

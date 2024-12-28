@@ -17,6 +17,8 @@ class AttackConfig:
     # character case attack parameters
     char_change_probability: float = 0.5,
     max_char_changes: int = 5,
+    # translation attack parameters
+    translation_model: str = "facebook/mbart-large-50-many-to-many-mmt",
     # General attack parameters
     input_type: str = "prompt"
     seed: Optional[int] = None
@@ -77,6 +79,7 @@ class AdversarialCodeGen:
         max_synonyms: int = 3,
         char_change_probability: float = 0.5,
         max_char_changes: int = 15,
+        translation_model: str = "facebook/mbart-large-50-many-to-many-mmt",
         input_type: str = "prompt",
         seed: Optional[int] = None,
         # Quantization parameters
@@ -134,6 +137,7 @@ class AdversarialCodeGen:
             max_synonyms=max_synonyms,
             char_change_probability=char_change_probability,
             max_char_changes=max_char_changes,
+            translation_model=translation_model,
             input_type=input_type,
             seed=seed
         )
