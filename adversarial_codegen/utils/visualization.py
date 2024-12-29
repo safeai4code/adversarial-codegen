@@ -111,7 +111,7 @@ def create_venn_diagram(set_a, set_b, exp_name, output_folder='venn', dataset_ty
         </defs>
 
         <!-- Main Title -->
-        <text x="300" y="50" class="main-title">{exp_name + ' on ' + dataset_type}</text>
+        <text x="400" y="50" class="main-title">{exp_name + ' on ' + dataset_type}</text>
         
         <!-- Venn Diagram Group (left side) -->
         <g transform="translate(50, 100)">
@@ -132,17 +132,17 @@ def create_venn_diagram(set_a, set_b, exp_name, output_folder='venn', dataset_ty
             <text x="20" y="40" class="legend-title">Set Elements:</text>
             
             <!-- Section A -->
-            <text x="20" y="{y_pos_a}" class="section-title">A - B (Unique to Set A):</text>
+            <text x="20" y="{y_pos_a}" class="section-title">A - B (Original Model): {len(only_a)}</text>
             <rect x="20" y="{y_pos_a + 10}" width="660" height="{height_a}" fill="#FFF" stroke="#DDD"/>
             {legend_a}
             
             <!-- Section B -->
-            <text x="20" y="{y_pos_b}" class="section-title">B - A (Unique to Set B):</text>
+            <text x="20" y="{y_pos_b}" class="section-title">B - A (Adversarial Model): {len(only_b)}</text>
             <rect x="20" y="{y_pos_b + 10}" width="660" height="{height_b}" fill="#FFF" stroke="#DDD"/>
             {legend_b}
             
             <!-- Intersection -->
-            <text x="20" y="{y_pos_intersection}" class="section-title">A ∩ B (Intersection):</text>
+            <text x="20" y="{y_pos_intersection}" class="section-title">A ∩ B (Intersection): {len(intersection)}</text>
             <rect x="20" y="{y_pos_intersection + 10}" width="660" height="{height_intersection}" fill="#FFF" stroke="#DDD"/>
             {legend_intersection}
         </g>
@@ -178,15 +178,17 @@ def visualizer(original_results, adversarial_results, exp_name, results_folder):
     
     # Create Venn diagrams
     create_venn_diagram(original_failed['base'], adversarial_failed['base'], exp_name, results_folder, 'base')
-    create_venn_diagram(original_failed['base'], adversarial_failed['base'], exp_name, results_folder, 'plus')
+    create_venn_diagram(original_failed['plus'], adversarial_failed['plus'], exp_name, results_folder, 'plus')
 
     print(f"The visualization results have been saved to {results_folder}")
 
 
 if __name__ == "__main__":
+    import sys
+    path = sys.argv[1]
     import json
-    with open("tests/adversarial_results.json", 'r') as f:
+    with open(f"{path}/adversarial_results.json", 'r') as f:
         adversarial_results = json.load(f)
-    with open("tests/original_results.json", 'r') as f:
+    with open(f"{path}/original_results.json", 'r') as f:
         original_results = json.load(f)
-    visualizer(original_results, adversarial_results, "name", "results")
+    visualizer(original_results, adversarial_results, path.split('/')[-1], path)
