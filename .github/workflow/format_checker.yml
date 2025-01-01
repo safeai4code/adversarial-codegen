@@ -9,6 +9,7 @@ on:
   push:
     branches:
       - workflow/format
+      - dev
 
 
 jobs:
@@ -42,9 +43,17 @@ jobs:
       - name: Check import order
         run: |
           isort . --check-only --diff
-          if [ $? -ne 0 ]; then
-            echo "❌ Import order check failed. Please run 'isort .' locally to fix the imports."
-            exit 1
+
+      - name: Auto-fix imports (on push to dev only)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+        run: |
+          isort .
+          if [[ -n $(git status --porcelain) ]]; then
+            git config --local user.email "github-actions[bot]@users.noreply.github.com"
+            git config --local user.name "github-actions[bot]"
+            git add .
+            git commit -m "Fix import order using isort"
+            git push
           fi
 
       - name: Run flake8
