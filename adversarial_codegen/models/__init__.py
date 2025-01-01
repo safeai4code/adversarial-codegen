@@ -8,23 +8,30 @@ from .model_registry import ModelRegistry
 @ModelRegistry.register("codellama")
 class CodeLLaMAModel(CodeLLaMAModel): pass
 
+
 @ModelRegistry.register("starcoder")
 class StarCoderModel(StarCoderModel): pass
+
 
 @ModelRegistry.register("codegen")
 class CodeGenModel(CodeGenModel): pass
 
+
 @ModelRegistry.register("deepseek")
 class DeepSeekModel(DeepSeekModel): pass
+
 
 @ModelRegistry.register("incoder")
 class InCoderModel(InCoderModel): pass
 
+
 @ModelRegistry.register("magicoder")
 class MagicCoderModel(MagicCoderModel): pass
 
+
 @ModelRegistry.register("dynamic")
 class DynamicQuantizedModel(DynamicQuantizedModel): pass
+
 
 @ModelRegistry.register("static")
 class StaticQuantizedModel(StaticQuantizedModel): pass

@@ -194,6 +194,7 @@ class AdversarialCodeGen:
         if visualization:
             visualizer(original_results, adversarial_results, model_path.rsplit('/', 1)[-1], save_results)
 
+
 def main():
     fire.Fire(AdversarialCodeGen)
 

@@ -46,6 +46,7 @@ class SemanticAttack(BaseAttack):
         except:
             return False
 
+
 class CodeTransformer(ast.NodeTransformer):
     """AST transformer for semantic-preserving modifications."""
     

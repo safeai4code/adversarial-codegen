@@ -15,6 +15,7 @@ def sample_prompts():
         "def binary_search(arr, target):"
     ]
 
+
 class TestCodeLLaMA:
     @pytest.mark.slow  # Mark as slow test due to model loading
     def test_model_initialization(self):
@@ -67,6 +68,7 @@ class TestCodeLLaMA:
         with pytest.raises(TypeError):
             model.generate(None)
 
+
 class TestStarCoder:
     @pytest.mark.slow
     def test_model_initialization(self):
@@ -95,6 +97,7 @@ class TestStarCoder:
         assert isinstance(output1, str)
         assert isinstance(output2, str)
 
+
 # Add similar test classes for other models (CodeGen, DeepSeek, etc.)
 
 def test_model_registry():
@@ -109,6 +112,7 @@ def test_model_registry():
     # Test invalid model name
     with pytest.raises(ValueError):
         Models.load("nonexistent_model")
+
 
 @pytest.mark.slow
 def test_model_consistency():

@@ -20,6 +20,7 @@ class PostInstallCommand(install):
         except Exception as e:
             print(f"Error downloading NLTK data: {str(e)}")
 
+
 class PostDevelopCommand(develop):
     """Post-installation for development mode."""
     def run(self):

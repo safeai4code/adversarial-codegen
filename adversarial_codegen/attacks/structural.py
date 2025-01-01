@@ -53,6 +53,7 @@ class StructuralAttack(BaseAttack):
         # Could be based on AST shape, node types, etc.
         return 1.0  # Placeholder implementation
 
+
 class StructuralTransformer(ast.NodeTransformer):
     """AST transformer for structural modifications."""
     
