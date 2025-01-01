@@ -40,3 +40,9 @@ build/
 # Project specific
 *.log
 .env
+
+# Code style and linting
+.isort.cfg
+.flake8
+.style.yapf
+.pylintrc
