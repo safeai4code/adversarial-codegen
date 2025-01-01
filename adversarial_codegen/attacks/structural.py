@@ -1,8 +1,9 @@
 import ast
 import random
+from typing import Any, Dict, List, Optional
 
-from typing import List, Dict, Any, Optional
 from ..framework.base_attack import BaseAttack
+
 
 class StructuralAttack(BaseAttack):
     """Modifies code structure while attempting to preserve functionality."""

@@ -1,6 +1,6 @@
 import random
 import re
-from typing import Dict, Any, Optional, List
+from typing import Any, Dict, List, Optional
 
 from adversarial_codegen.framework.base_attack import BaseAttack
 

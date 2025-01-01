@@ -1,8 +1,8 @@
 import random
-from typing import Dict, Any, Optional
 import re
-from transformers import pipeline
+from typing import Any, Dict, Optional
 
+from transformers import pipeline
 
 """
 This is a backup of the translation_attack.py for acheiving more general generation configurations.

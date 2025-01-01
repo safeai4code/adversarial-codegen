@@ -1,4 +1,5 @@
 import pytest
+
 from adversarial_codegen import Models
 
 

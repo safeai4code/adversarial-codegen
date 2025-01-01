@@ -1,19 +1,15 @@
-import os
 import json
-from typing import Dict, Any, List, Optional
+import os
+from typing import Any, Dict, List, Optional
 
+from evalplus.data import get_human_eval_plus, get_mbpp_plus, write_jsonl
 from tqdm import tqdm
-from evalplus.data import (
-    get_human_eval_plus, 
-    get_mbpp_plus,
-    write_jsonl
-)
 
-from adversarial_codegen.models.base_model import BaseModel
-from adversarial_codegen.framework.base_attack import BaseAttack
-from adversarial_codegen.attacks.synonym_attack import SynonymAttack
 from adversarial_codegen.attacks.char_attack import CharacterCaseAttack
+from adversarial_codegen.attacks.synonym_attack import SynonymAttack
 from adversarial_codegen.attacks.translation_attack import TranslationAttack
+from adversarial_codegen.framework.base_attack import BaseAttack
+from adversarial_codegen.models.base_model import BaseModel
 from adversarial_codegen.utils.evaluation import evaluator
 
 
@@ -143,7 +139,8 @@ class AttackFramework:
 
 
 if __name__ == "__main__":
-    from adversarial_codegen.models import Models, DynamicQuantizedModel
+    from adversarial_codegen.models import DynamicQuantizedModel, Models
+
     # model = Models.load("codellama", model_path="/home/sfang9/workshop/llms/original_llms/deepseek-coder-6.7b-base")
     model = DynamicQuantizedModel(model_path="/home/sfang9/workshop/llms/original_llms/deepseek-coder-6.7b-base", quantized_path="/home/sfang9/workshop/llms/compressed_llms/deepseek_ai_deepseek_coder_6.7b_base_w8a8_cali500_None.pt")
     attack_config = {

@@ -1,6 +1,6 @@
 import random
 import re
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
 
 import torch
 from transformers import pipeline

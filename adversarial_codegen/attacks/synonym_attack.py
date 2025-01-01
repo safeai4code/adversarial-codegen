@@ -1,11 +1,11 @@
-import re
 import random
-from typing import Dict, Any, Optional, List
+import re
+from typing import Any, Dict, List, Optional
 
-from nltk.corpus import wordnet as wn
-from nltk.tokenize import word_tokenize
-from nltk.tag import pos_tag
 from nltk.corpus import stopwords
+from nltk.corpus import wordnet as wn
+from nltk.tag import pos_tag
+from nltk.tokenize import word_tokenize
 
 from adversarial_codegen.framework.base_attack import BaseAttack
 

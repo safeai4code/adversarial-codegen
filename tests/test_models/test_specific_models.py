@@ -1,9 +1,11 @@
 import pytest
+
 from adversarial_codegen.models import Models
 from adversarial_codegen.models.model_implementations import (
     CodeLLaMAModel,
-    StarCoderModel
+    StarCoderModel,
 )
+
 
 @pytest.fixture
 def sample_prompts():

@@ -1,7 +1,8 @@
-from .model_loader import Models
-from .model_implementations import *
-from .model_registry import ModelRegistry
 from .base_model import BaseModel
+from .model_implementations import *
+from .model_loader import Models
+from .model_registry import ModelRegistry
+
 
 # Register default models
 @ModelRegistry.register("codellama")

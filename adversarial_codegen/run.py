@@ -1,10 +1,11 @@
-import fire
-from dataclasses import dataclass, asdict
-from typing import Optional, Dict, Any, Literal
+from dataclasses import asdict, dataclass
+from typing import Any, Dict, Literal, Optional
 
+import fire
 import torch
-from adversarial_codegen.models import Models
+
 from adversarial_codegen.framework.attack_framework import AttackFramework
+from adversarial_codegen.models import Models
 from adversarial_codegen.utils import visualizer
 
 

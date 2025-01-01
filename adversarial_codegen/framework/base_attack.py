@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-from typing import List, Dict, Any, Optional
+from typing import Any, Dict, List, Optional
+
 
 class BaseAttack(ABC):
     """Base class for all adversarial attacks."""

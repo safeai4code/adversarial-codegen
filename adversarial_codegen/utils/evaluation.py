@@ -11,9 +11,6 @@ from typing import Any, Dict, List, Optional, Tuple
 from warnings import warn
 
 import numpy as np
-from termcolor import cprint
-from tqdm import tqdm
-
 from evalplus.codegen import run_codegen
 from evalplus.config import *
 from evalplus.data import (
@@ -33,6 +30,8 @@ from evalplus.eval import (
 )
 from evalplus.eval._special_oracle import MBPP_OUTPUT_NOT_NONE_TASKS
 from evalplus.gen.util import trusted_exec
+from termcolor import cprint
+from tqdm import tqdm
 
 Result = Tuple[str, List[bool]]
 
