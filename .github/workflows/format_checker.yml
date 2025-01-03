@@ -11,6 +11,8 @@ on:
       - workflow/format
       - dev
 
+permissions:
+  contents: write
 
 jobs:
   code-quality:
