@@ -45,7 +45,7 @@ jobs:
           isort . --check-only --diff
 
       - name: Auto-fix imports (on push to dev only)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+        if: github.event_name == 'push'
         run: |
           isort .
           if [[ -n $(git status --porcelain) ]]; then
