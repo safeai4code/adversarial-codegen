@@ -58,7 +58,7 @@ jobs:
 
       - name: Run flake8
         run: |
-          flake8 . --select E302,W292,F403,E501 --max-line-length=120
+          flake8 . --select E302,W292,F403,F405,E501 --max-line-length=120
           if [ $? -ne 0 ]; then
             echo "❌ Flake8 check failed. Please fix the code style issues."
             exit 1

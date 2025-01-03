@@ -1,5 +1,14 @@
 from .base_model import BaseModel
-from .model_implementations import *
+from .model_implementations import (
+    CodeGenModel,
+    CodeLLaMAModel,
+    DeepSeekModel,
+    DynamicQuantizedModel,
+    InCoderModel,
+    MagicCoderModel,
+    StarCoderModel,
+    StaticQuantizedModel,
+)
 from .model_loader import Models
 from .model_registry import ModelRegistry
 

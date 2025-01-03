@@ -138,7 +138,8 @@ if __name__ == "__main__":
     
     attack = TranslationAttack(config)
     
-    prompt = '\"\"\"\nWrite a function to find the shared elements from the given two lists.\nassert set(similar_elements((3, 4, 5, 6),(5, 7, 4, 10))) == set((4, 5))\n\"\"\"\n'
+    prompt = '\"\"\"\nWrite a function to find the shared elements from the given two lists.\n' \
+             'assert set(similar_elements((3, 4, 5, 6),(5, 7, 4, 10))) == set((4, 5))\n\"\"\"\n'
     
     # Generate multiple examples to demonstrate variability
     for i in range(4):

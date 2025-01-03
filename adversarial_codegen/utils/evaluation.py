@@ -12,7 +12,7 @@ from warnings import warn
 
 import numpy as np
 from evalplus.codegen import run_codegen
-from evalplus.config import *
+from evalplus.config import DEFAULT_GT_TIME_LIMIT_FACTOR, DEFAULT_MIN_TIME_LIMIT
 from evalplus.data import (
     get_human_eval_plus,
     get_human_eval_plus_hash,

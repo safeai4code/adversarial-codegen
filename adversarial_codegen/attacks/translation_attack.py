@@ -109,7 +109,8 @@ if __name__ == "__main__":
     
     attack = TranslationAttack(config)
     
-    prompt = '\"\"\"\nWrite a function to find the shared elements from the given two lists.\nassert set(similar_elements((3, 4, 5, 6),(5, 7, 4, 10))) == set((4, 5))\n\"\"\"\n'
+    prompt = '\"\"\"\nWrite a function to find the shared elements from the given two lists.\n' \
+             'assert set(similar_elements((3, 4, 5, 6),(5, 7, 4, 10))) == set((4, 5))\n\"\"\"\n'
     
     attach_prompt_1 = attack.generate_adversarial_example(prompt)
     attach_prompt_2 = attack.generate_adversarial_example(prompt)

@@ -102,7 +102,8 @@ class AdversarialCodeGen:
         Args:
             # Base parameters
             model_path: Path to the model,
-            model_type: Type of model (codellama, starcoder, etc.) # TODO: Use decoder-only, encoder-only, and encoeer-decoder to specify model type in the future.
+            model_type: Type of model (codellama, starcoder, etc.)
+                # TODO: Use decoder-only, encoder-only, and encoeer-decoder to specify model type in the future.
             quantized_type: Type of quantization (None, "static", or "dynamic").
             dataset: Dataset to use, choices=["mbpp", "humaneval"].
             attack_method: Type of attack, choices=["synonym", "random upper", "translate-and-back"].
@@ -120,7 +121,8 @@ class AdversarialCodeGen:
             
             # Quantization parameters
             quant_method: Static quantization method. Choices=["bnb", "gptq", "awq"].
-            quant_bits: Number of bits for quantization. Note: Only 4 and 8 are supported for static quantization and 8 for dynamic quantization.
+            quant_bits: Number of bits for quantization.
+                Note: Only 4 and 8 are supported for static quantization and 8 for dynamic quantization.
             quant_type: Quantization type for 4-bit static quantization. Choices=["nf4", "nf4_2", "nf4_3"].
             quantize_embeddings: Whether to quantize embeddings (for dynamic).
             
@@ -129,7 +131,8 @@ class AdversarialCodeGen:
             max_length: Maximum generation length.
             temperature: Temperature for sampling.
             top_p: Top-p for sampling, generally used with temperature.
-            num_beams: Number of beams for beam search. Note: Only used if use_beam_search is True and should be equal or greater than num_return_sequences.
+            num_beams: Number of beams for beam search.
+                Note: Only used if use_beam_search is True and should be equal or greater than num_return_sequences.
             use_beam_search: Whether to use beam search.
         """
         # Create configurations
