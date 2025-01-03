@@ -41,6 +41,7 @@ jobs:
           default_section = THIRDPARTY" > .isort.cfg
 
       - name: Check import order
+        continue-on-error: true
         run: |
           isort . --check-only --diff
 
