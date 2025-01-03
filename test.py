@@ -1,5 +1,6 @@
-import sys
-import requests
 import os
-from utils import evaluator, visualizer
+import sys
+
 import pandas
+import requests
+from utils import evaluator, visualizer
