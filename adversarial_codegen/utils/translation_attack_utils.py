@@ -1,8 +1,8 @@
 import random
-from typing import Dict, Any, Optional
 import re
-from transformers import pipeline
+from typing import Any, Dict, Optional
 
+from transformers import pipeline
 
 """
 This is a backup of the translation_attack.py for acheiving more general generation configurations.
@@ -138,7 +138,8 @@ if __name__ == "__main__":
     
     attack = TranslationAttack(config)
     
-    prompt = '\"\"\"\nWrite a function to find the shared elements from the given two lists.\nassert set(similar_elements((3, 4, 5, 6),(5, 7, 4, 10))) == set((4, 5))\n\"\"\"\n'
+    prompt = '\"\"\"\nWrite a function to find the shared elements from the given two lists.\n' \
+             'assert set(similar_elements((3, 4, 5, 6),(5, 7, 4, 10))) == set((4, 5))\n\"\"\"\n'
     
     # Generate multiple examples to demonstrate variability
     for i in range(4):

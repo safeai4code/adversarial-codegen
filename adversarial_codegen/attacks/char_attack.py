@@ -1,6 +1,6 @@
 import random
 import re
-from typing import Dict, Any, Optional, List
+from typing import Any, Dict, List, Optional
 
 from adversarial_codegen.framework.base_attack import BaseAttack
 
@@ -103,7 +103,8 @@ if __name__ == "__main__":
     attack.validate_config()
     
     # Test prompt
-    prompt = "\"\"\"\nWrite a function to find the shared elements from the given two lists.\nassert set(similar_elements((3, 4, 5, 6),(5, 7, 4, 10))) == set((4, 5))\n\"\"\"\n"
+    prompt = "\"\"\"\nWrite a function to find the shared elements from the given two lists.\n" \
+             "assert set(similar_elements((3, 4, 5, 6),(5, 7, 4, 10))) == set((4, 5))\n\"\"\"\n"
     
     # Generate multiple attacks with the same seed
     attack_prompt_1 = attack.generate_adversarial_example(prompt)

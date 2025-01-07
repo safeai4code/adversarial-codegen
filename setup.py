@@ -1,7 +1,8 @@
-from setuptools import setup, find_packages
-from setuptools.command.install import install
+from setuptools import find_packages, setup
 from setuptools.command.develop import develop
 from setuptools.command.egg_info import egg_info
+from setuptools.command.install import install
+
 
 class PostInstallCommand(install):
     """Post-installation for installation mode."""
@@ -18,6 +19,7 @@ class PostInstallCommand(install):
                 nltk.download(package, quiet=True)
         except Exception as e:
             print(f"Error downloading NLTK data: {str(e)}")
+
 
 class PostDevelopCommand(develop):
     """Post-installation for development mode."""

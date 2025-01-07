@@ -1,9 +1,11 @@
 import pytest
+
 from adversarial_codegen.models import Models
 from adversarial_codegen.models.model_implementations import (
     CodeLLaMAModel,
-    StarCoderModel
+    StarCoderModel,
 )
+
 
 @pytest.fixture
 def sample_prompts():
@@ -12,6 +14,7 @@ def sample_prompts():
         "def quicksort(arr):",
         "def binary_search(arr, target):"
     ]
+
 
 class TestCodeLLaMA:
     @pytest.mark.slow  # Mark as slow test due to model loading
@@ -65,6 +68,7 @@ class TestCodeLLaMA:
         with pytest.raises(TypeError):
             model.generate(None)
 
+
 class TestStarCoder:
     @pytest.mark.slow
     def test_model_initialization(self):
@@ -93,6 +97,7 @@ class TestStarCoder:
         assert isinstance(output1, str)
         assert isinstance(output2, str)
 
+
 # Add similar test classes for other models (CodeGen, DeepSeek, etc.)
 
 def test_model_registry():
@@ -107,6 +112,7 @@ def test_model_registry():
     # Test invalid model name
     with pytest.raises(ValueError):
         Models.load("nonexistent_model")
+
 
 @pytest.mark.slow
 def test_model_consistency():

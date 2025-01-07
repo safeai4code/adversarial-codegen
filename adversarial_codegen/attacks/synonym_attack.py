@@ -1,11 +1,11 @@
-import re
 import random
-from typing import Dict, Any, Optional, List
+import re
+from typing import Any, Dict, List, Optional
 
-from nltk.corpus import wordnet as wn
-from nltk.tokenize import word_tokenize
-from nltk.tag import pos_tag
 from nltk.corpus import stopwords
+from nltk.corpus import wordnet as wn
+from nltk.tag import pos_tag
+from nltk.tokenize import word_tokenize
 
 from adversarial_codegen.framework.base_attack import BaseAttack
 
@@ -144,9 +144,15 @@ class SynonymAttack(BaseAttack):
 
 
 if __name__ == "__main__":
-    attack = SynonymAttack(config={'replacement_probability': 0.5, 'max_synonyms': 3, 'input_type': 'prompt', 'seed': 42})
+    attack = SynonymAttack(config={
+        'replacement_probability': 0.5,
+        'max_synonyms': 3,
+        'input_type': 'prompt',
+        'seed': 42
+    })
     attack.validate_config()
-    prompt = "\"\"\"\nWrite a function to find the shared elements from the given two lists.\nassert set(similar_elements((3, 4, 5, 6),(5, 7, 4, 10))) == set((4, 5))\n\"\"\"\n"
+    prompt = "\"\"\"\nWrite a function to find the shared elements from the given two lists.\n" \
+             "assert set(similar_elements((3, 4, 5, 6),(5, 7, 4, 10))) == set((4, 5))\n\"\"\"\n"
     attach_prompt_1 = attack.generate_adversarial_example(prompt)
     attach_prompt_2 = attack.generate_adversarial_example(prompt)
     attach_prompt_3 = attack.generate_adversarial_example(prompt)

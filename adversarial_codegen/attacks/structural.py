@@ -1,8 +1,9 @@
 import ast
 import random
+from typing import Any, Dict, List, Optional
 
-from typing import List, Dict, Any, Optional
 from ..framework.base_attack import BaseAttack
+
 
 class StructuralAttack(BaseAttack):
     """Modifies code structure while attempting to preserve functionality."""
@@ -51,6 +52,7 @@ class StructuralAttack(BaseAttack):
         # Implement structural difference metric
         # Could be based on AST shape, node types, etc.
         return 1.0  # Placeholder implementation
+
 
 class StructuralTransformer(ast.NodeTransformer):
     """AST transformer for structural modifications."""

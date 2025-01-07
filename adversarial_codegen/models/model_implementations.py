@@ -1,6 +1,6 @@
 import os
-from typing import Optional, List, Union, Literal, Set
 from dataclasses import dataclass
+from typing import List, Literal, Optional, Set, Union
 
 import torch
 from torch import dtype

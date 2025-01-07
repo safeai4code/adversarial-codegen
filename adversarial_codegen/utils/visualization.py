@@ -1,5 +1,6 @@
 import os
 import textwrap
+
 import cairosvg
 
 
@@ -88,12 +89,18 @@ def create_venn_diagram(set_a, set_b, exp_name, output_folder='venn', dataset_ty
     y_pos_intersection = y_pos_b + height_b + 50
     
     # Create the dynamic legend content
-    legend_a = '\n'.join(f'<text x="40" y="{y_pos_a + 40 + i*20}" class="legend-text">{line}</text>' 
-                        for i, line in enumerate(only_a_text.split('\n')))
-    legend_b = '\n'.join(f'<text x="40" y="{y_pos_b + 40 + i*20}" class="legend-text">{line}</text>'
-                        for i, line in enumerate(only_b_text.split('\n')))
-    legend_intersection = '\n'.join(f'<text x="40" y="{y_pos_intersection + 40 + i*20}" class="legend-text">{line}</text>'
-                        for i, line in enumerate(intersection_text.split('\n')))
+    legend_a = '\n'.join(
+        f'<text x="40" y="{y_pos_a + 40 + i*20}" class="legend-text">{line}</text>' 
+        for i, line in enumerate(only_a_text.split('\n'))
+    )
+    legend_b = '\n'.join(
+        f'<text x="40" y="{y_pos_b + 40 + i*20}" class="legend-text">{line}</text>'
+        for i, line in enumerate(only_b_text.split('\n'))
+    )
+    legend_intersection = '\n'.join(
+        f'<text x="40" y="{y_pos_intersection + 40 + i*20}" class="legend-text">{line}</text>'
+        for i, line in enumerate(intersection_text.split('\n'))
+    )
     
     # Create the SVG content with dynamic heights
     svg_content = f'''
@@ -143,7 +150,8 @@ def create_venn_diagram(set_a, set_b, exp_name, output_folder='venn', dataset_ty
             
             <!-- Intersection -->
             <text x="20" y="{y_pos_intersection}" class="section-title">A ∩ B (Intersection): {len(intersection)}</text>
-            <rect x="20" y="{y_pos_intersection + 10}" width="660" height="{height_intersection}" fill="#FFF" stroke="#DDD"/>
+            <rect x="20" y="{y_pos_intersection + 10}" width="660" height="{height_intersection}"
+                fill="#FFF" stroke="#DDD"/>
             {legend_intersection}
         </g>
     </svg>

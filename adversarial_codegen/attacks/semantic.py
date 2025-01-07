@@ -1,6 +1,8 @@
-from typing import List, Dict, Any, Optional
 import ast
+from typing import Any, Dict, List, Optional
+
 from ..framework.base_attack import BaseAttack
+
 
 class SemanticAttack(BaseAttack):
     """Performs semantic-preserving transformations on code."""
@@ -43,6 +45,7 @@ class SemanticAttack(BaseAttack):
             return ast.dump(orig_ast) != ast.dump(mod_ast)
         except:
             return False
+
 
 class CodeTransformer(ast.NodeTransformer):
     """AST transformer for semantic-preserving modifications."""
