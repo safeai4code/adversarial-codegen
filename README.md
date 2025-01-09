@@ -13,14 +13,15 @@ Our framework provides:
 - 📈 Extensive evaluation across diverse coding datasets
 - 🎯 Standardized benchmarking and comparison tools
 
-## 🚀 Supported Models (Original LLMs / Compressed LLMs)
+## 🚀 Supported Models (In Plan)
+We will support both original LLMs and their compressed versions.
 
-- <img src="./assets/llama_logo.jpg" width="20"> [CodeLLaMA](https://github.com/meta-llama/codellama)  <!-- Download from Meta's official repo -->
-- <img src="./assets/starcoder_logo.png" width="20"> [StarCoder](https://github.com/bigcode-project/starcoder)  <!-- From BigCode/HuggingFace -->
-- <img src="./assets/codegen_logo.png" width="20"> [CodeGen](https://github.com/salesforce/CodeGen)     <!-- From Salesforce -->
-- <img src="./assets/deepseek_logo.png" width="20"> [DeepSeek](https://github.com/deepseek-ai/DeepSeek-Coder-V2)   <!-- From DeepSeek official website -->
-- <img src="./assets/incoder_logo.png" width="20"> [InCoder](https://github.com/dpfried/incoder)     <!-- From Meta/Facebook -->
-- 🎩 [Magicoder](https://github.com/ise-uiuc/magicoder)
+- <img src="./assets/llama_logo.jpg" width="20"> [CodeLLaMA](https://github.com/meta-llama/codellama)  <!-- Download from Meta's official repo --> :heavy_check_mark:
+- <img src="./assets/starcoder_logo.png" width="20"> [StarCoder](https://github.com/bigcode-project/starcoder)  <!-- From BigCode/HuggingFace --> :muscle:
+- <img src="./assets/codegen_logo.png" width="20"> [CodeGen](https://github.com/salesforce/CodeGen)     <!-- From Salesforce --> :muscle:
+- <img src="./assets/deepseek_logo.png" width="20"> [DeepSeek](https://github.com/deepseek-ai/DeepSeek-Coder-V2)   <!-- From DeepSeek official website --> :heavy_check_mark:
+- <img src="./assets/incoder_logo.png" width="20"> [InCoder](https://github.com/dpfried/incoder)     <!-- From Meta/Facebook --> :muscle:
+- 🎩 [Magicoder](https://github.com/ise-uiuc/magicoder) :muscle:
 
 ## 🛠️ Implemented Attack Methods (In Plan)
 1. 🎯 Natural Noise Injection
