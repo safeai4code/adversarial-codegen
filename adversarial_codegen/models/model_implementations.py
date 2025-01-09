@@ -8,8 +8,8 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 from transformers.generation import GenerationConfig
 
 from adversarial_codegen.utils.function_extractor import extract_functions
-from .base_model import BaseModel
 
+from .base_model import BaseModel
 
 
 @dataclass
