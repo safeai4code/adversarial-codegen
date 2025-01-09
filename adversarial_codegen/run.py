@@ -71,8 +71,8 @@ class AdversarialCodeGen:
         quantized_type: Optional[str] = None,
         dataset: str = "mbpp",
         attack_method: str = "synonym",
-        save_prompts: str = "/path/to/save",
-        save_results: str = "/path/to/save",
+        save_prompts: Optional[str] = None,
+        save_results: Optional[str] = None,
         visualization: bool = False,
         mini: bool = False,
         # Attack parameters
@@ -106,7 +106,7 @@ class AdversarialCodeGen:
                 # TODO: Use decoder-only, encoder-only, and encoeer-decoder to specify model type in the future.
             quantized_type: Type of quantization (None, "static", or "dynamic").
             dataset: Dataset to use, choices=["mbpp", "humaneval"].
-            attack_method: Type of attack, choices=["synonym", "random upper", "translate-and-back"].
+            attack_method: Type of attack, choices=["synonym", "char", "translate"].
             save_prompts: Path to save prompts.
             save_results: Path to save results.
             mini: Use mini version of dataset.
