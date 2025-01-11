@@ -13,6 +13,7 @@ from adversarial_codegen.framework.base_attack import BaseAttack
 class SynonymAttack(BaseAttack):
     def __init__(self, config: Dict[str, Any]):
         super().__init__(config)
+        self.validate_config()
         self.stop_words = set(stopwords.words('english'))
         self.replaceable_pos = {'NN', 'NNS', 'VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ', 'JJ', 'RB'}
 
