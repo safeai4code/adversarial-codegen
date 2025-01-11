@@ -91,6 +91,7 @@ class CodeLLaMAModel(BaseModel):
     def __init__(self, model_path: str = "codellama/CodeLlama-7b-hf", **kwargs):
         super().__init__(model_path, **kwargs)
         self.load()
+        self.gen_config = kwargs.get('generation_config')
 
     def load(self) -> None:
         print("Now loading original LLM model")
@@ -148,7 +149,6 @@ class CodeLLaMAModel(BaseModel):
     def generate(
         self, 
         prompt: str,
-        **kwargs
     ) -> Union[str, List[str]]:
         """
         Generate completion(s) for a given prompt.
@@ -163,9 +163,9 @@ class CodeLLaMAModel(BaseModel):
         """
         # Start with default strategy and update with any provided kwargs
         strategy = GenerationStrategy()
-        if kwargs:
+        if self.gen_config:
             strategy_dict = strategy.__dict__.copy()
-            strategy_dict.update(kwargs)
+            strategy_dict.update(self.gen_config)
             strategy = GenerationStrategy(**strategy_dict)
 
         inputs = self.tokenizer(prompt, return_tensors="pt").to(self.model.device)
@@ -195,12 +195,12 @@ class CodeLLaMAModel(BaseModel):
 
 class DynamicQuantizedModel(BaseModel):
     def __init__(self, model_path: str = "codellama/CodeLlama-7b-hf", **kwargs):
-        # Extract quantization config from kwargs or use default
-        quant_config_params = {
-            'bits': kwargs.pop('quant_bits', 8),
-            'quantize_embeddings': kwargs.pop('quantize_embeddings', False),
-        }
-        self.quant_config = DynamicQuantizationConfig(**quant_config_params)
+        # Extract quantization config and generation config from kwargs
+        try:
+            self.quant_config = DynamicQuantizationConfig(**kwargs.get('quant_config'))
+        except TypeError:
+            raise ValueError("Quantization parameters not provided")
+        self.gen_config = kwargs.get('generation_config')
         
         super().__init__(model_path, **kwargs)
         self.load()
@@ -297,14 +297,13 @@ class DynamicQuantizedModel(BaseModel):
     def generate(
         self, 
         prompt: str,
-        **kwargs
     ) -> Union[str, List[str]]:
         """Generate completions using the quantized model on CPU"""
         # Reuse your existing generation code but ensure CPU operation
         strategy = GenerationStrategy()
-        if kwargs:
+        if self.gen_config:
             strategy_dict = strategy.__dict__.copy()
-            strategy_dict.update(kwargs)
+            strategy_dict.update(self.gen_config)
             strategy = GenerationStrategy(**strategy_dict)
 
         inputs = self.tokenizer(prompt, return_tensors="pt")  # Already on CPU
@@ -333,23 +332,22 @@ class DynamicQuantizedModel(BaseModel):
 
 class StaticQuantizedModel(BaseModel):
     def __init__(self, model_path: str = "codellama/CodeLlama-7b-hf", **kwargs):
-        # Extract quantization config from kwargs
-        quant_params = {
-            'method': kwargs.pop('quant_method', 'bnb'),
-            'bits': kwargs.pop('quant_bits', 8),
-            'compute_dtype': kwargs.pop('compute_dtype', torch.float16),
-            'quant_type': kwargs.pop('quant_type', 'nf4'),
-            'dataset': kwargs.pop('dataset', 'c4')
-        }
-        self.quant_config = QuantizationConfig(**quant_params)
-        
+        # Extract quantization config and generation config from kwargs
+        try:
+            self.quant_config = QuantizationConfig(**kwargs.get('quant_config'))
+        except TypeError:
+            raise ValueError("Quantization parameters not provided")
+        self.gen_config = kwargs.get('generation_config')
         super().__init__(model_path, **kwargs)
+
+        # Initialize model with a static quantization configuration
         self.load()
 
     def load(self) -> None:
         """Load tokenizer and quantized model based on configuration"""
 
         assert self.quant_config.bits in [4, 8], "Bits must be 4 or 8"
+        assert self.quant_config.quant_type in ["nf4", "fp4"], "Quant type must be 'nf4' or 'fp4'"
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_path)
         
         if self.tokenizer.pad_token_id is None:
@@ -467,7 +465,6 @@ class StaticQuantizedModel(BaseModel):
     def generate(
         self, 
         prompt: str,
-        **kwargs
     ) -> Union[str, List[str]]:
         """
         Generate completion(s) for a given prompt.
@@ -482,9 +479,9 @@ class StaticQuantizedModel(BaseModel):
         """
         # Start with default strategy and update with any provided kwargs
         strategy = GenerationStrategy()
-        if kwargs:
+        if self.gen_config:
             strategy_dict = strategy.__dict__.copy()
-            strategy_dict.update(kwargs)
+            strategy_dict.update(self.gen_config)
             strategy = GenerationStrategy(**strategy_dict)
 
         inputs = self.tokenizer(prompt, return_tensors="pt").to(self.model.device)

@@ -81,12 +81,12 @@ class AdversarialCodeGen:
         char_change_probability: float = 0.5,
         max_char_changes: int = 15,
         translation_model: str = "facebook/mbart-large-50-many-to-many-mmt",
-        input_type: str = "prompt",
+        input_type: str = None,
         seed: Optional[int] = None,
         # Quantization parameters
         quant_method: Literal["bnb", "gptq", "awq"] = "bnb",
         quant_bits: Literal[4, 8] = 8,
-        quant_type: str = "nf4",
+        quant_type: Literal["nf4", "fp4"] = "nf4",
         quantize_embeddings: bool = False,
         # Generation parameters
         num_return_sequences: int = 1,
@@ -116,7 +116,7 @@ class AdversarialCodeGen:
             max_synonyms: Maximum number of synonyms.
             char_change_probability: Probability of changing character case.
             max_char_changes: Maximum number of character changes.
-            input_type: Type of input.
+            input_type: Type of input, decided by the dataset.
             seed: Random seed for reproducibility.
             
             # Quantization parameters

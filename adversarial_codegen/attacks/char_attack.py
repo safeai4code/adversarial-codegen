@@ -8,6 +8,7 @@ from adversarial_codegen.framework.base_attack import BaseAttack
 class CharacterCaseAttack(BaseAttack):
     def __init__(self, config: Dict[str, Any]):
         super().__init__(config)
+        self.validate_config()
         # Initialize random seed if provided
         self.seed = config.get('seed')
         if self.seed is not None:
