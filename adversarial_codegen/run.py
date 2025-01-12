@@ -74,7 +74,7 @@ class AdversarialCodeGen:
         save_prompts: Optional[str] = None,
         save_results: Optional[str] = None,
         visualization: bool = False,
-        mini: bool = False,
+        # mini: bool = False,
         # Attack parameters
         replacement_prob: float = 0.15,
         max_synonyms: int = 3,
@@ -106,10 +106,10 @@ class AdversarialCodeGen:
                 # TODO: Use decoder-only, encoder-only, and encoeer-decoder to specify model type in the future.
             quantized_type: Type of quantization (None, "static", or "dynamic").
             dataset: Dataset to use, choices=["mbpp", "humaneval"].
+                # TODO: Add support for mini version
             attack_method: Type of attack, choices=["synonym", "char", "translate"].
             save_prompts: Path to save prompts.
             save_results: Path to save results.
-            mini: Use mini version of dataset.
             
             # Attack parameters
             replacement_prob: Probability of replacement.
@@ -184,7 +184,7 @@ class AdversarialCodeGen:
             attack_method=attack_method,
             attack_config=asdict(attack_config),
             dataset=dataset,
-            mini=mini
+            mini=False
         )
 
         # Run attack

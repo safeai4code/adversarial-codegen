@@ -1,6 +1,7 @@
 import json
 import os
-from typing import Any, Dict, List, Optional
+import random
+from typing import Any, Dict, List, Optional, OrderedDict
 
 from evalplus.data import get_human_eval_plus, get_mbpp_plus, write_jsonl
 from tqdm import tqdm
@@ -19,7 +20,10 @@ class AttackFramework:
                  attack_method: str = "synonym",
                  attack_config: Dict[str, Any] = None,
                  dataset: str = "humaneval",
-                 mini: bool = False):
+                 mini: bool = False,
+                 test: bool = False,
+                 testset_size: int = 5,
+                 random_seed: int = 42):
         """
         Initialize attack framework.
         
@@ -29,6 +33,9 @@ class AttackFramework:
             attack_config: Attack configuration
             dataset: Dataset to use ("humaneval" or "mbpp")
             mini: Whether to use mini version of dataset
+            test: Whether to run in test mode
+            testset_size: Number of problems to select from the dataset (default: 5) in the test mode
+            random_seed: Seed for random selection to ensure consistency
         """
         self.model = model
         self.attack_method = attack_method
@@ -36,16 +43,12 @@ class AttackFramework:
         self.attacker = self._initialize_attacker()
         self.dataset = dataset.lower()
         self.mini = mini
+        self.test = test
+        self.testset_size = testset_size
+        self.random_seed = random_seed
         
         # Load appropriate dataset
-        if self.dataset == "humaneval":
-            self.problems = get_human_eval_plus(mini=mini)
-            self.attack_config['input_type'] = 'code'
-        elif self.dataset == "mbpp":
-            self.problems = get_mbpp_plus(mini=mini)
-            self.attack_config['input_type'] = 'prompt'
-        else:
-            raise ValueError(f"Unknown dataset: {dataset}. Choose 'humaneval' or 'mbpp'")
+        self.problems = self._load_dataset()
     
     def _initialize_attacker(self) -> BaseAttack:
         """Initialize the appropriate attack method."""
@@ -60,6 +63,44 @@ class AttackFramework:
             return TranslationAttack(config=self.attack_config)
         else:
             raise ValueError(f"Unknown attack method: {self.attack_method}")
+
+    def _get_fixed_subset(self, problems: Dict[str, Any], size: int, seed: int) -> Dict[str, Any]:
+        """
+        Get a fixed subset of problems that will be consistent across runs.
+        
+        Args:
+            problems: Dictionary of problems
+            size: Number of problems to select
+            seed: Random seed for consistent selection
+            
+        Returns:
+            Dictionary containing the selected problems
+        """
+        problems_list = list(problems.items())
+        
+        random.seed(seed)
+        selected_problems = random.sample(problems_list, size)
+        
+        return OrderedDict(selected_problems)
+
+    def _load_dataset(self) -> Dict[str, Any]:
+        """Load and process the dataset."""
+
+        # Load the full dataset
+        if self.dataset == "humaneval":
+            full_dataset = get_human_eval_plus(mini=self.mini)
+            self.attack_config['input_type'] = 'code'
+        elif self.dataset == "mbpp":
+            full_dataset = get_mbpp_plus(mini=self.mini)
+            self.attack_config['input_type'] = 'prompt'
+        else:
+            raise ValueError(f"Unknown dataset: {dataset}. Choose 'humaneval' or 'mbpp'")
+
+        # Get fixed subset in test mode
+        if self.test and self.testset_size < len(full_dataset):
+            return self._get_fixed_subset(full_dataset, self.testset_size, self.random_seed)
+        
+        return full_dataset
     
     def run_attack(
         self, sample_indices: Optional[List[int]] = None,
