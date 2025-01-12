@@ -1,5 +1,5 @@
-from dataclasses import asdict
 import random
+from dataclasses import asdict
 from typing import Any, Dict, List, OrderedDict
 
 from evalplus.data import get_human_eval_plus, get_mbpp_plus

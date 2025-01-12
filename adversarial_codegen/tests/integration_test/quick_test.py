@@ -4,9 +4,11 @@ from typing import Any, Dict, Literal, Optional
 import fire
 import torch
 
-from adversarial_codegen.run import AttackConfig, AdversarialCodeGen
-from adversarial_codegen.tests.testing.framework.attack_framework import TestAttackFramework
 from adversarial_codegen.models import Models
+from adversarial_codegen.run import AdversarialCodeGen, AttackConfig
+from adversarial_codegen.tests.testing.framework.attack_framework import (
+    TestAttackFramework,
+)
 from adversarial_codegen.utils import visualizer
 
 
