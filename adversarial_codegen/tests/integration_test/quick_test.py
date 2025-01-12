@@ -5,7 +5,7 @@ import fire
 import torch
 
 from adversarial_codegen.run import AttackConfig, AdversarialCodeGen
-from adversarial_codegen.framework.attack_framework import AttackFramework
+from adversarial_codegen.tests.testing.framework.attack_framework import TestAttackFramework
 from adversarial_codegen.models import Models
 from adversarial_codegen.utils import visualizer
 
@@ -93,13 +93,12 @@ class TestAdversarialCodeGen(AdversarialCodeGen):
         )
 
         # Initialize framework with test parameter
-        framework = AttackFramework(
+        framework = TestAttackFramework(
             model=model,
             attack_method=attack_method,
             attack_config=asdict(attack_config),
             dataset=dataset,
-            mini=False,
-            test=True
+            mini=False
         )
 
         # Run attack
