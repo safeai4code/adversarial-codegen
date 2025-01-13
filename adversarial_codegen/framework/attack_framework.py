@@ -144,13 +144,15 @@ class AttackFramework:
 if __name__ == "__main__":
     from adversarial_codegen.models import DynamicQuantizedModel, Models
 
-    # model = Models.load("codellama", model_path="/home/sfang9/workshop/llms/original_llms/deepseek-coder-6.7b-base")
+    model_config = {}
+    quant_config = {
+        "bits": 8,
+        "quantize_embeddings": False,
+    }
+    model_config["quant_config"] = quant_config
     model = DynamicQuantizedModel(
-        model_path="/home/sfang9/workshop/llms/original_llms/deepseek-coder-6.7b-base",
-        quantized_path=(
-            "/home/sfang9/workshop/llms/compressed_llms/"
-            "deepseek_ai_deepseek_coder_6.7b_base_w8a8_cali500_None.pt"
-        )
+        model_path="deepseek-ai/deepseek-coder-1.3b-base",
+        **model_config
     )
     attack_config = {
         "replacement_probability": 0.15,
