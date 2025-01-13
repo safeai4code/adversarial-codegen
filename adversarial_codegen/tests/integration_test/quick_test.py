@@ -6,7 +6,7 @@ import torch
 
 from adversarial_codegen.models import Models
 from adversarial_codegen.run import AdversarialCodeGen, AttackConfig
-from adversarial_codegen.tests.testing.framework.attack_framework import (
+from adversarial_codegen.tests.testing.framework.test_attack_framework import (
     TestAttackFramework,
 )
 from adversarial_codegen.utils import visualizer

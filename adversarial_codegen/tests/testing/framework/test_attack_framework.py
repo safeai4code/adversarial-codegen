@@ -52,26 +52,3 @@ class TestAttackFramework(AttackFramework):
         random.seed(self.random_seed)
         selected_problems = random.sample(problems_list, self.testset_size)
         return OrderedDict(selected_problems)
-
-
-if __name__ == "__main__":
-    from adversarial_codegen.models import DynamicQuantizedModel, Models
-
-    # model = Models.load("codellama", model_path="/home/sfang9/workshop/llms/original_llms/deepseek-coder-6.7b-base")
-    model = DynamicQuantizedModel(
-        model_path="/home/sfang9/workshop/llms/original_llms/deepseek-coder-6.7b-base",
-        quantized_path=(
-            "/home/sfang9/workshop/llms/compressed_llms/"
-            "deepseek_ai_deepseek_coder_6.7b_base_w8a8_cali500_None.pt"
-        )
-    )
-    attack_config = {
-        "replacement_probability": 0.15,
-        "max_synonyms": 3,
-        "input_type": "prompt",
-        "seed": 42
-    }
-    attack_framework = AttackFramework(
-        model=model, attack_method="synonym", attack_config=attack_config, dataset="mbpp")
-    save_path = "aisec/adversarial-attack-nlp/pre_results/deepseek-coder-67b-compressed"
-    _, _ = attack_framework.run_attack(save_prompts=save_path, save_results=save_path)

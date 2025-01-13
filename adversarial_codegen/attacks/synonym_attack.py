@@ -162,3 +162,4 @@ if __name__ == "__main__":
     assert attach_prompt_1 == attach_prompt_2 # we set seed to 42, so the result should be the same
     assert attach_prompt_2 == attach_prompt_3
     assert attach_prompt_3 == attach_prompt_4
+    print(attach_prompt_1, attach_prompt_2, attach_prompt_3, attach_prompt_4, sep='\n')
