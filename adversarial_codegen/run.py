@@ -109,7 +109,7 @@ class AdversarialCodeGen:
                 # TODO: Add support for mini version
             attack_method: Type of attack, choices=["synonym", "char", "translate"].
             save_prompts: Path to save prompts.
-            save_results: Path to save results.
+            save_results: Path to save results. Required if visualization is True.
             
             # Attack parameters
             replacement_prob: Probability of replacement.
@@ -135,6 +135,10 @@ class AdversarialCodeGen:
                 Note: Only used if use_beam_search is True and should be equal or greater than num_return_sequences.
             use_beam_search: Whether to use beam search.
         """
+        # Check if save_results is provided when visualization is enabled
+        if visualization and save_results is None:
+            raise ValueError("save_results must be provided when visualization is enabled")
+        
         # Create configurations
         attack_config = AttackConfig(
             replacement_probability=replacement_prob,

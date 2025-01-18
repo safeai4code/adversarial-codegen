@@ -17,18 +17,18 @@ Our framework provides:
 ## 🚀 Supported Models
 We currently support the following models:
 - <img src="./assets/llama_logo.jpg" width="20"> [CodeLLaMA](https://github.com/meta-llama/codellama)  <!-- Download from Meta's official repo -->
-  - llama-32-1b
-  - llama-32-3b
-  - llama-31-8b
+  - llama-3.2-1b
+  - llama-3.2-3b
+  - llama-3.1-8b
 - - <img src="./assets/deepseek_logo.png" width="20"> [DeepSeek](https://github.com/deepseek-ai/DeepSeek-Coder-V2)   <!-- From DeepSeek official website -->
-  - deepseek-coder-13b
+  - deepseek-coder-1.3b
+  - deepseek-coder-6.7b
   - deepseek-coder-33b
-  - deepseek-coder-67b
 
 ## 🛠️ Implemented Attack Methods
 1. ⌨️ Character Attack (char_attack)
    - Introduces character-level perturbations
-   - Simulates common typing errors
+   - Randomly change character cases
 
 2. 🔄 Synonym Attack (synonym_attack)
    - Replaces words with semantically similar alternatives
@@ -92,14 +92,17 @@ adversarial-codegen-test attack [OPTIONS]
 ### 🔑 Required Arguments
 
 - model_path: 📂 Path to the original model
-- save_prompts: 💾 Directory path to save generated prompts
-- save_results: 📊 Directory path to save attack results
 
 ### ⚡ Optional Arguments
 
 #### 🤖 Model Configuration
 - model_type: Type of model (default: "codellama")
 - quantized_type: 🔧 Type of quantized model (optional)
+
+#### 💾 Save Options
+
+- save_prompts: Save generated prompts to the specific directory.
+- save_results: Save attack results to the specific directory.
 
 #### 📚 Dataset Options
 - dataset: 📚 Dataset to use ("humaneval" or "mbpp", default: "mbpp")
@@ -119,7 +122,7 @@ adversarial-codegen-test attack [OPTIONS]
 - quantize_embeddings: Whether to quantize embeddings (for dynamic quantization)
 
 #### 📊 Visualization
-- visualization: Enable/disable visualization output (default: False)
+- visualization: Enable/disable visualization output (default: False). Require save_results to be set.
 
 #### ⚙️ Generation Parameters
 - num_return_sequences: Number of responses to generate (default: 1)
