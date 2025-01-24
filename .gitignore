@@ -1,10 +1,48 @@
-*.pyc
+# Python bytecode
 __pycache__/
 *.py[cod]
 *$py.class
+
+# C extensions
 *.so
+
+# Virtual Environment
 .Python
+venv/
+env/
+.env/
+ENV/
 
+# IDE specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS specific files
 .DS_Store
+Thumbs.db
 
+# Testing and coverage
 .coverage
+htmlcov/
+.tox/
+.pytest_cache/
+nosetests.xml
+coverage.xml
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+*.egg
+
+# Project specific
+*.log
+.env
+
+# Code style and linting
+.isort.cfg
+.flake8
+.style.yapf
+.pylintrc

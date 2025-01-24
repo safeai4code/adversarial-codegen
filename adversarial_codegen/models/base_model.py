@@ -1,5 +1,6 @@
-from typing import Optional, List, Dict, Any
 from abc import ABC, abstractmethod
+from typing import Any, Dict, List, Optional
+
 
 class BaseModel(ABC):
     def __init__(self, model_path: Optional[str] = None, **kwargs):

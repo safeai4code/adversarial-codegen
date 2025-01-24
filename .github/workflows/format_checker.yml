@@ -1,0 +1,72 @@
+name: Python Code Check
+
+on:
+  pull_request:
+    branches:
+      - dev
+    paths:
+      - '**.py'
+  push:
+    branches:
+      - workflow/format
+      - dev
+
+permissions:
+  contents: write
+
+jobs:
+  code-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '>=3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install isort flake8
+
+      - name: Create isort configuration
+        run: |
+          echo "[settings]
+          multi_line_output = 3
+          include_trailing_comma = true
+          force_grid_wrap = 0
+          use_parentheses = true
+          ensure_newline_before_comments = true
+          line_length = 88
+          sections = FUTURE,STDLIB,THIRDPARTY,FIRSTPARTY,LOCALFOLDER
+          default_section = THIRDPARTY" > .isort.cfg
+
+      - name: Check import order
+        continue-on-error: true
+        run: |
+          isort . --check-only --diff
+
+      - name: Configure Git Authentication
+        run: |
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+      
+      - name: Auto-fix imports (on push to dev only)
+        if: github.event_name == 'push'
+        run: |
+          isort .
+          if [[ -n $(git status --porcelain) ]]; then
+            git config --local user.email "github-actions[bot]@users.noreply.github.com"
+            git config --local user.name "github-actions[bot]"
+            git add .
+            git commit -m "Fix import order using isort"
+            git push
+          fi
+
+      - name: Run flake8
+        run: |
+          flake8 . --select E302,W292,F403,F405,E501 --max-line-length=120
+          if [ $? -ne 0 ]; then
+            echo "❌ Flake8 check failed. Please fix the code style issues."
+            exit 1
+          fi

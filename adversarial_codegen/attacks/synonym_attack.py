@@ -1,27 +1,40 @@
-import re
 import random
+import re
+from typing import Any, Dict, List, Optional
 
-from ..framework.base_attack import BaseAttack
-from typing import Dict, Any, Optional
-from nltk.corpus import wordnet as wn
-from nltk.tokenize import word_tokenize
-from nltk.tag import pos_tag
 from nltk.corpus import stopwords
+from nltk.corpus import wordnet as wn
+from nltk.tag import pos_tag
+from nltk.tokenize import word_tokenize
+
+from adversarial_codegen.framework.base_attack import BaseAttack
+
 
 class SynonymAttack(BaseAttack):
     def __init__(self, config: Dict[str, Any]):
         super().__init__(config)
+        self.validate_config()
         self.stop_words = set(stopwords.words('english'))
         self.replaceable_pos = {'NN', 'NNS', 'VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ', 'JJ', 'RB'}
 
+        # Initialize random seed if provided
+        self.seed = config.get('seed')
+        if self.seed is not None:
+            random.seed(self.seed)
+
     def validate_config(self) -> None:
-        required = ['replacement_probability', 'max_synonyms', 'input_type']
+        required = ['replacement_probability', 'max_synonyms', 'input_type', "seed"]
         if not all(key in self.config for key in required):
             raise ValueError(f"Config must contain: {required}")
         if not 0 <= self.config['replacement_probability'] <= 1:
             raise ValueError("replacement_probability must be between 0 and 1")
+        if 'seed' in self.config and not isinstance(self.config['seed'], (int, type(None))):
+            raise ValueError("seed must be an integer or None")
 
     def generate_adversarial_example(self, input_text: str, target_label: Optional[Any] = None) -> str:
+        if self.seed is not None:
+            random.seed(self.seed)
+
         if self.config['input_type'] == 'prompt':
             input_text_lines = input_text.splitlines()
             assert len(input_text_lines) == 4, "Unknown prompt format"
@@ -32,7 +45,7 @@ class SynonymAttack(BaseAttack):
             return self._attack_code_comments(input_text)
         raise ValueError(f"Unknown input type: {self.config['input_type']}")
     
-    def attack_prompt(self, prompt: str) -> str:
+    def _attack_prompt(self, prompt: str) -> str:
         """Apply synonym replacement to natural language prompt."""
         tokens = word_tokenize(prompt)
         pos_tags = pos_tag(tokens)
@@ -41,7 +54,7 @@ class SynonymAttack(BaseAttack):
         for word, pos in pos_tags:
             if (pos[:2] in self.replaceable_pos and 
                 word.lower() not in self.stop_words and
-                random.random() < self.replacement_probability):
+                random.random() < self.config['replacement_probability']):
                 synonym = self._find_synonym(word, pos)
                 modified_tokens.append(synonym if synonym else word)
             else:
@@ -49,7 +62,7 @@ class SynonymAttack(BaseAttack):
         
         return self._reconstruct_text(modified_tokens)
     
-    def attack_code_comments(self, code: str) -> str:
+    def _attack_code_comments(self, code: str) -> str:
         """Apply synonym replacement to docstring comments while preserving code."""
         # Pattern to find triple-quoted strings (both single and double quotes)
         docstring_pattern = r'(\'\'\'[\s\S]*?\'\'\'|\"\"\"[\s\S]*?\"\"\")'
@@ -97,7 +110,7 @@ class SynonymAttack(BaseAttack):
             return word
         
         # Select a random synonym
-        num_synonyms = min(len(synonyms), self.max_synonyms)
+        num_synonyms = min(len(synonyms), self.config['max_synonyms'])
         return random.choice(synonyms[:num_synonyms])
     
     def _get_wordnet_pos(self, treebank_tag: str) -> Optional[str]:
@@ -129,3 +142,24 @@ class SynonymAttack(BaseAttack):
         text = re.sub(r'\s+([.,!?)])', r'\1', text)
         text = re.sub(r'(\()\s+', r'\1', text)
         return text
+
+
+if __name__ == "__main__":
+    attack = SynonymAttack(config={
+        'replacement_probability': 0.5,
+        'max_synonyms': 3,
+        'input_type': 'prompt',
+        'seed': 42
+    })
+    attack.validate_config()
+    prompt = "\"\"\"\nWrite a function to find the shared elements from the given two lists.\n" \
+             "assert set(similar_elements((3, 4, 5, 6),(5, 7, 4, 10))) == set((4, 5))\n\"\"\"\n"
+    attach_prompt_1 = attack.generate_adversarial_example(prompt)
+    attach_prompt_2 = attack.generate_adversarial_example(prompt)
+    attach_prompt_3 = attack.generate_adversarial_example(prompt)
+    attach_prompt_4 = attack.generate_adversarial_example(prompt)
+ 
+    assert attach_prompt_1 == attach_prompt_2 # we set seed to 42, so the result should be the same
+    assert attach_prompt_2 == attach_prompt_3
+    assert attach_prompt_3 == attach_prompt_4
+    print(attach_prompt_1, attach_prompt_2, attach_prompt_3, attach_prompt_4, sep='\n')

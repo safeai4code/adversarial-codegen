@@ -1,6 +1,8 @@
 import random
-from typing import List, Dict, Any, Optional
+from typing import Any, Dict, List, Optional
+
 from ..framework.base_attack import BaseAttack
+
 
 class NaturalNoiseAttack(BaseAttack):
     """Adds natural programming noise like comments, whitespace, and variable renaming."""

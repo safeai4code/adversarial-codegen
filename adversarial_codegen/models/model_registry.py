@@ -1,4 +1,5 @@
-from typing import Type, Dict, List
+from typing import Dict, List, Type
+
 from .base_model import BaseModel
 
 

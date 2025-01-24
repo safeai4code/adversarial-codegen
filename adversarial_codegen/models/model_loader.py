@@ -1,7 +1,10 @@
 from typing import Optional, Type
-from .model_registry import ModelRegistry
+
 from .base_model import BaseModel
-from .model_implementations import *
+from .model_registry import ModelRegistry
+
+# from .model_implementations import *
+
 
 class Models:
     DEFAULT_MODELS = {
