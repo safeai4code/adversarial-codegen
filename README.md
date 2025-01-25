@@ -20,7 +20,7 @@ We currently support the following models:
   - llama-3.2-1b
   - llama-3.2-3b
   - llama-3.1-8b
-- - <img src="./assets/deepseek_logo.png" width="20"> [DeepSeek](https://github.com/deepseek-ai/DeepSeek-Coder-V2)   <!-- From DeepSeek official website -->
+- <img src="./assets/deepseek_logo.png" width="20"> [DeepSeek](https://github.com/deepseek-ai/DeepSeek-Coder-V2)   <!-- From DeepSeek official website -->
   - deepseek-coder-1.3b
   - deepseek-coder-6.7b
   - deepseek-coder-33b
