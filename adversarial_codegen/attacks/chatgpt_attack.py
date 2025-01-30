@@ -1,8 +1,8 @@
-import random
 import os
+import random
+from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, Optional
-from enum import Enum
 
 from openai import OpenAI
 

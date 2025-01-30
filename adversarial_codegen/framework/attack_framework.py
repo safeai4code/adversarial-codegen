@@ -6,10 +6,10 @@ from evalplus.data import get_human_eval_plus, get_mbpp_plus, write_jsonl
 from tqdm import tqdm
 
 from adversarial_codegen.attacks.char_attack import CharacterCaseAttack
-from adversarial_codegen.attacks.chatgpt_attack import ChatGPTAttack, AttackType
-from adversarial_codegen.datasets.dataset_wrapper import AdversarialDatasetWrapper
+from adversarial_codegen.attacks.chatgpt_attack import AttackType, ChatGPTAttack
 from adversarial_codegen.attacks.synonym_attack import SynonymAttack
 from adversarial_codegen.attacks.translation_attack import TranslationAttack
+from adversarial_codegen.datasets.dataset_wrapper import AdversarialDatasetWrapper
 from adversarial_codegen.framework.base_attack import BaseAttack
 from adversarial_codegen.models.base_model import BaseModel
 from adversarial_codegen.utils.evaluation import evaluator

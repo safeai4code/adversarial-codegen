@@ -4,8 +4,9 @@ import os
 import time
 from datetime import datetime
 from pathlib import Path
-from tqdm import tqdm
 from typing import Dict, List, Optional, Tuple, Union
+
+from tqdm import tqdm
 
 from adversarial_codegen.attacks.chatgpt_attack import AttackType
 from adversarial_codegen.framework.base_attack import BaseAttack
@@ -282,8 +283,9 @@ class AdversarialDatasetWrapper:
 if __name__ == "__main__":
     # Example usage showing how to set environment variables
     import os
-    from adversarial_codegen.attacks.chatgpt_attack import ChatGPTAttack, AttackType
-    
+
+    from adversarial_codegen.attacks.chatgpt_attack import AttackType, ChatGPTAttack
+
     # Set environment variables (in practice, these would be set outside the script)
     os.environ["ADVERSARIAL_CACHE_DIR"] = str(Path.home() / "research" / "adversarial_cache")
     os.environ["ADVERSARIAL_LOG_DIR"] = str(Path.home() / "research" / "adversarial_logs")
