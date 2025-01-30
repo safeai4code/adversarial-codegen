@@ -129,7 +129,8 @@ class AdversarialCodeGen:
             max_char_changes: Maximum number of character changes.
             translation_model: Translation model for translation attack. Cho
             attack_model: Model for LLM-based attack. Now only support ChatGPT.
-            attack_type: Type of attack for LLM-based attack. Choices=["paraphrase", "constraint_change", "scope_expansion", "semantic_preserve"].
+            attack_type: Type of attack for LLM-based attack. Choices=["paraphrase", "constraint_change",
+                        "scope_expansion", "semantic_preserve"].
             adv_tempature: Temperature for LLM-based attack.
             adv_max_tokens: Maximum tokens for LLM-based attack.
             input_type: Type of input, decided by the dataset.
