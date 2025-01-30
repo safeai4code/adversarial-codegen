@@ -101,7 +101,11 @@ class ChatGPTAttack(BaseAttack):
             response = self.client.chat.completions.create(
                 model=self.model,
                 messages=[
-                    {"role": "system", "content": f"You are a helpful assistant that generates {attack_type.value} variations of programming tasks."},
+                    {
+                        "role": "system",
+                        "content": f"You are a helpful assistant that generates {attack_type.value} "
+                                    f"variations of programming tasks."
+                    },
                     {"role": "user", "content": prompt}
                 ],
                 temperature=self.temperature,
