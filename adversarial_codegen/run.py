@@ -20,6 +20,12 @@ class AttackConfig:
     max_char_changes: int = 5,
     # translation attack parameters
     translation_model: str = "facebook/mbart-large-50-many-to-many-mmt",
+    # LLM-based attack parameters
+    attack_model: str = "gpt-4o",
+    attack_type: str = "paraphrase",
+    adv_tempature: float = 0.7,
+    adv_max_tokens: int = 150,
+    api_path: str = "",
     # General attack parameters
     input_type: str = "prompt"
     seed: Optional[int] = None
@@ -81,6 +87,11 @@ class AdversarialCodeGen:
         char_change_probability: float = 0.5,
         max_char_changes: int = 15,
         translation_model: str = "facebook/mbart-large-50-many-to-many-mmt",
+        attack_model: str = "gpt-4o",
+        attack_type: str = "paraphrase",
+        adv_tempature: float = 0.7,
+        adv_max_tokens: int = 150,
+        api_path: str = "",
         input_type: str = None,
         seed: Optional[int] = None,
         # Quantization parameters
@@ -107,7 +118,7 @@ class AdversarialCodeGen:
             quantized_type: Type of quantization (None, "static", or "dynamic").
             dataset: Dataset to use, choices=["mbpp", "humaneval"].
                 # TODO: Add support for mini version
-            attack_method: Type of attack, choices=["synonym", "char", "translate"].
+            attack_method: Type of attack, choices=["synonym", "char", "translate", "llm_attack"].
             save_prompts: Path to save prompts.
             save_results: Path to save results. Required if visualization is True.
             
@@ -116,6 +127,11 @@ class AdversarialCodeGen:
             max_synonyms: Maximum number of synonyms.
             char_change_probability: Probability of changing character case.
             max_char_changes: Maximum number of character changes.
+            translation_model: Translation model for translation attack. Cho
+            attack_model: Model for LLM-based attack. Now only support ChatGPT.
+            attack_type: Type of attack for LLM-based attack. Choices=["paraphrase", "constraint_change", "scope_expansion", "semantic_preserve"].
+            adv_tempature: Temperature for LLM-based attack.
+            adv_max_tokens: Maximum tokens for LLM-based attack.
             input_type: Type of input, decided by the dataset.
             seed: Random seed for reproducibility.
             
@@ -146,6 +162,11 @@ class AdversarialCodeGen:
             char_change_probability=char_change_probability,
             max_char_changes=max_char_changes,
             translation_model=translation_model,
+            attack_model=attack_model,
+            attack_type=attack_type,
+            adv_tempature=adv_tempature,
+            adv_max_tokens=adv_max_tokens,
+            api_path=api_path,
             input_type=input_type,
             seed=seed
         )
