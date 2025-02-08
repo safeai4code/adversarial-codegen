@@ -6,23 +6,27 @@ from evalplus.data import get_human_eval_plus, get_mbpp_plus, write_jsonl
 from tqdm import tqdm
 
 from adversarial_codegen.attacks.char_attack import CharacterCaseAttack
+from adversarial_codegen.attacks.chatgpt_attack import AttackType, ChatGPTAttack
 from adversarial_codegen.attacks.synonym_attack import SynonymAttack
 from adversarial_codegen.attacks.translation_attack import TranslationAttack
+from adversarial_codegen.datasets.dataset_wrapper import AdversarialDatasetWrapper
 from adversarial_codegen.framework.base_attack import BaseAttack
 from adversarial_codegen.models.base_model import BaseModel
 from adversarial_codegen.utils.evaluation import evaluator
 
 
 class AttackFramework:
-    def __init__(self, 
-                 model: BaseModel,
-                 attack_method: str = "synonym",
-                 attack_config: Dict[str, Any] = None,
-                 dataset: str = "humaneval",
-                 mini: bool = False):
+    def __init__(
+        self,
+        model: BaseModel,
+        attack_method: str = "synonym",
+        attack_config: Dict[str, Any] = None,
+        dataset: str = "humaneval",
+        mini: bool = False
+    ):
         """
         Initialize attack framework.
-        
+
         Args:
             model: Model to attack
             attack_method: Type of attack to use
@@ -33,7 +37,6 @@ class AttackFramework:
         self.model = model
         self.attack_method = attack_method
         self.attack_config = attack_config
-        self.attacker = self._initialize_attacker()
         self.dataset = dataset.lower()
         self.mini = mini
         
@@ -46,6 +49,9 @@ class AttackFramework:
             self.attack_config['input_type'] = 'prompt'
         else:
             raise ValueError(f"Unknown dataset: {dataset}. Choose 'humaneval' or 'mbpp'")
+        
+        # Initialize attacker
+        self.attacker = self._initialize_attacker()
     
     def _initialize_attacker(self) -> BaseAttack:
         """Initialize the appropriate attack method."""
@@ -58,8 +64,33 @@ class AttackFramework:
         elif self.attack_method == "translate":
             print("Using translation attack")
             return TranslationAttack(config=self.attack_config)
+        elif self.attack_method == "llm_attack":
+            print("Using ChatGPT attack")
+            return ChatGPTAttack(config=self.attack_config)
         else:
             raise ValueError(f"Unknown attack method: {self.attack_method}")
+
+    def _build_adversarial_prompts(self, problems: list) -> dict:
+        """Build adversarial prompts for the given list of prompts."""
+        adversarial_prompts = {}
+        for task_id, problem in problems:
+            prompt = problem["prompt"]
+            adversarial_prompt = self.attacker.generate_adversarial_example(prompt)
+            adversarial_prompts[task_id] = adversarial_prompt
+        return adversarial_prompts
+
+    def _build_llm_adversarial_prompts(self, problems: list, generator) -> dict:
+        """Build adversarial prompts for the given list of prompts."""
+        index_dict = {}
+        prompts = []
+        for task_id, problem in problems:
+            prompts.append(problem["prompt"])
+            index_dict[problem["prompt"]] = task_id
+        adversarial_generation = generator.generate_dataset(prompts, self.attack_config["attack_type"])
+        adversarial_prompts = {}
+        for prompt, adv in adversarial_generation:
+            adversarial_prompts[index_dict[prompt]] = adv
+        return adversarial_prompts
     
     def run_attack(
         self, sample_indices: Optional[List[int]] = None,
@@ -89,15 +120,24 @@ class AttackFramework:
                   if i in sample_indices]
         )
 
+        # Build Adeversarial Prompts
+        if self.attack_method != "llm_attack":
+            adversarial_prompts = self._build_adversarial_prompts(problems_to_attack)
+        else:
+            attack_wrapper = AdversarialDatasetWrapper(
+                attack_model=self.attacker,
+            )
+            adversarial_prompts = self._build_llm_adversarial_prompts(problems_to_attack, attack_wrapper)
+            assert len(adversarial_prompts) == len(problems_to_attack), "Adversarial prompts not generated correctly"
+
         for task_id, problem in tqdm(problems_to_attack):
             # Get appropriate prompt for dataset type
             # prompt = self._get_problem_prompt(problem)
             prompt = problem["prompt"]
+            adversarial_prompt = adversarial_prompts[task_id]
             
             # Generate original output
             original_output = self.model.generate(prompt)
-            
-            adversarial_prompt = self.attacker.generate_adversarial_example(prompt)
             adversarial_output = self.model.generate(adversarial_prompt)
             
             # Format for evaluation
@@ -142,25 +182,20 @@ class AttackFramework:
 
 
 if __name__ == "__main__":
-    from adversarial_codegen.models import DynamicQuantizedModel, Models
+    from adversarial_codegen.models import CodeLLaMAModel
 
-    model_config = {}
-    quant_config = {
-        "bits": 8,
-        "quantize_embeddings": False,
-    }
-    model_config["quant_config"] = quant_config
-    model = DynamicQuantizedModel(
+    model = CodeLLaMAModel(
         model_path="deepseek-ai/deepseek-coder-1.3b-base",
-        **model_config
     )
     attack_config = {
-        "replacement_probability": 0.15,
-        "max_synonyms": 3,
-        "input_type": "prompt",
-        "seed": 42
+        "attack_model": 'gpt-3.5-turbo',
+        "temperature": 0.7,
+        "max_tokens": 150,
+        "api_path": "/home/sfang9/workshop/project_test/openai/openai-key",
+        "attack_type": 'paraphrase',
+        "input_type": None,
     }
     attack_framework = AttackFramework(
-        model=model, attack_method="synonym", attack_config=attack_config, dataset="mbpp")
-    save_path = "aisec/adversarial-attack-nlp/pre_results/deepseek-coder-67b-compressed"
+        model=model, attack_method="llm_attack", attack_config=attack_config, dataset="mbpp")
+    save_path = "/home/sfang9/workshop/project_test/test-results"
     _, _ = attack_framework.run_attack(save_prompts=save_path, save_results=save_path)

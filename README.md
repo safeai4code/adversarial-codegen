@@ -1,7 +1,7 @@
 # 🛡️ adversarial-codegen
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Status: Active](https://img.shields.io/badge/status-active-brightgreen.svg)](https://github.com/yourusername/adversarial-codegen)
 
 This repository evaluates the robustness of Large Language Models (LLMs) under various adversarial attacks, focusing on code generation tasks. We test both original and compressed LLMs across different datasets to provide comprehensive insights into model vulnerabilities.
@@ -12,14 +12,37 @@ Our framework provides:
 - 🤖 Support for multiple LLM architectures (both original and compressed)
 - 📈 Extensive evaluation across diverse coding datasets
 - 🎯 Standardized benchmarking and comparison tools
+- 📊 Visualization tools for analysis
+
+## 🚀 Supported Models
+We currently support the following models:
+- <img src="./assets/llama_logo.jpg" width="20"> [CodeLLaMA](https://github.com/meta-llama/codellama)  <!-- Download from Meta's official repo -->
+  - llama-3.2-1b
+  - llama-3.2-3b
+  - llama-3.1-8b
+- <img src="./assets/deepseek_logo.png" width="20"> [DeepSeek](https://github.com/deepseek-ai/DeepSeek-Coder-V2)   <!-- From DeepSeek official website -->
+  - deepseek-coder-1.3b
+  - deepseek-coder-6.7b
+  - deepseek-coder-33b
+
+## 🛠️ Implemented Attack Methods
+1. ⌨️ Character Attack (char_attack)
+   - Introduces character-level perturbations
+   - Randomly change character cases
+
+2. 🔄 Synonym Attack (synonym_attack)
+   - Replaces words with semantically similar alternatives
+   - Preserves overall meaning while testing robustness
+
+3. 🌐 Translation Attack (translate_attack)
+   - Applies back-translation perturbations
+   - Tests model resilience to paraphrasing
 
 ## 🚀 Supported Models (In Plan)
 We will support both original LLMs and their compressed versions.
 
-- <img src="./assets/llama_logo.jpg" width="20"> [CodeLLaMA](https://github.com/meta-llama/codellama)  <!-- Download from Meta's official repo --> :heavy_check_mark:
 - <img src="./assets/starcoder_logo.png" width="20"> [StarCoder](https://github.com/bigcode-project/starcoder)  <!-- From BigCode/HuggingFace --> :muscle:
 - <img src="./assets/codegen_logo.png" width="20"> [CodeGen](https://github.com/salesforce/CodeGen)     <!-- From Salesforce --> :muscle:
-- <img src="./assets/deepseek_logo.png" width="20"> [DeepSeek](https://github.com/deepseek-ai/DeepSeek-Coder-V2)   <!-- From DeepSeek official website --> :heavy_check_mark:
 - <img src="./assets/incoder_logo.png" width="20"> [InCoder](https://github.com/dpfried/incoder)     <!-- From Meta/Facebook --> :muscle:
 - 🎩 [Magicoder](https://github.com/ise-uiuc/magicoder) :muscle:
 
@@ -54,21 +77,32 @@ pip install -e .
 ```
 
 ## 🎮 Usage
-After installation, you can use the main functionality through the command-line interface:
+After installation, you can use the main functionality through the command-line interface. The framework provides two command-line interfaces:
+
+### 1. Full Evaluation Mode
 ```bash
 adversarial-codegen attack [OPTIONS]
 ```
+
+### 2. Quick Test Mode (5 samples)
+```bash
+adversarial-codegen-test attack [OPTIONS]
+```
+
 ### 🔑 Required Arguments
 
 - model_path: 📂 Path to the original model
-- save_prompts: 💾 Directory path to save generated prompts
-- save_results: 📊 Directory path to save attack results
 
 ### ⚡ Optional Arguments
 
 #### 🤖 Model Configuration
 - model_type: Type of model (default: "codellama")
 - quantized_type: 🔧 Type of quantized model (optional)
+
+#### 💾 Save Options
+
+- save_prompts: Save generated prompts to the specific directory.
+- save_results: Save attack results to the specific directory.
 
 #### 📚 Dataset Options
 - dataset: 📚 Dataset to use ("humaneval" or "mbpp", default: "mbpp")
@@ -87,6 +121,9 @@ adversarial-codegen attack [OPTIONS]
 - quant_type: Quantization type for 4-bit static quantization ("nf4", "nf4_2", "nf4_3")
 - quantize_embeddings: Whether to quantize embeddings (for dynamic quantization)
 
+#### 📊 Visualization
+- visualization: Enable/disable visualization output (default: False). Require save_results to be set.
+
 #### ⚙️ Generation Parameters
 - num_return_sequences: Number of responses to generate (default: 1)
 - max_length: Maximum generation length (default: 512)
@@ -99,8 +136,14 @@ adversarial-codegen attack [OPTIONS]
 
 ### 1. 🔰 Basic Usage:
 ```bash
-# Attack original LLMs
+# Attack original LLMs, full evaluation
 adversarial-codegen attack \
+    --model_path /path/to/model \
+    --save_prompts /path/to/save/prompts \
+    --save_results /path/to/save/results
+
+# Quick test
+adversarial-codegen-test attack \
     --model_path /path/to/model \
     --save_prompts /path/to/save/prompts \
     --save_results /path/to/save/results
@@ -120,7 +163,8 @@ adversarial-codegen attack \
     --num_beams 5 \
     --seed 42 \
     --save_prompts /path/to/save/prompts \
-    --save_results /path/to/save/results
+    --save_results /path/to/save/results \
+    --visualization True
 ```
 
 ### 3. 🔧 Using Static Quantization:
@@ -159,8 +203,11 @@ The tool generates two types of outputs:
 2. 📊 Results: Saved to the directory specified by --save_results
 - Model responses to original prompts
 - Model responses to adversarial prompts
-- Performance metrics and analysis (Now only include pass rate, visual statistics will come soon!)
+- Performance metrics and analysis
 
+3. 📈 Visualizations: (When --visualization is enabled)
+   - Venn diagrams showing overlap between different attack methods
+   - Saved in the output folder
 
 ## 👥 Contributing
 We welcome contributions! Please feel free to submit a Pull Request.

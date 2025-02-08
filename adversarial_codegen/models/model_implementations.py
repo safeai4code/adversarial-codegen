@@ -147,7 +147,7 @@ class CodeLLaMAModel(BaseModel):
             return output
 
     def generate(
-        self, 
+        self,
         prompt: str,
     ) -> Union[str, List[str]]:
         """
@@ -170,7 +170,7 @@ class CodeLLaMAModel(BaseModel):
 
         inputs = self.tokenizer(prompt, return_tensors="pt").to(self.model.device)
         generation_config = self._get_generation_config(strategy)
-        
+
         outputs = self.model.generate(
             **inputs,
             generation_config=generation_config,
