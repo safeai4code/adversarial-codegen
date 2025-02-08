@@ -29,6 +29,11 @@ class TestAdversarialCodeGen(AdversarialCodeGen):
         char_change_probability: float = 0.5,
         max_char_changes: int = 15,
         translation_model: str = "facebook/mbart-large-50-many-to-many-mmt",
+        attack_model: str = "gpt-4o",
+        attack_type: str = "paraphrase",
+        adv_tempature: float = 0.7,
+        adv_max_tokens: int = 150,
+        api_path: str = "",
         input_type: str = None,
         seed: Optional[int] = None,
         # Quantization parameters
@@ -49,7 +54,6 @@ class TestAdversarialCodeGen(AdversarialCodeGen):
         
         Args:
             All original parameters from parent class
-            test: Boolean flag for test mode
         """
         # Create configurations
         attack_config = AttackConfig(
@@ -58,6 +62,11 @@ class TestAdversarialCodeGen(AdversarialCodeGen):
             char_change_probability=char_change_probability,
             max_char_changes=max_char_changes,
             translation_model=translation_model,
+            attack_model=attack_model,
+            attack_type=attack_type,
+            adv_tempature=adv_tempature,
+            adv_max_tokens=adv_max_tokens,
+            api_path=api_path,
             input_type=input_type,
             seed=seed
         )
