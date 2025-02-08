@@ -290,9 +290,14 @@ class DynamicQuantizedModel(BaseModel):
     
     def _extract_completion(self, full_text: str, prompt: str) -> str:
         """Extract only the completion part from the generated text"""
-        if full_text.startswith(prompt):
-            return full_text[len(prompt):].lstrip()
-        return full_text
+        
+        output = full_text[len(prompt):].lstrip()
+        gen_solution = extract_functions(output)
+
+        if gen_solution is not None:
+            return gen_solution
+        else:
+            return output
 
     def generate(
         self, 
@@ -458,9 +463,14 @@ class StaticQuantizedModel(BaseModel):
     
     def _extract_completion(self, full_text: str, prompt: str) -> str:
         """Extract only the completion part from the generated text"""
-        if full_text.startswith(prompt):
-            return full_text[len(prompt):].lstrip()
-        return full_text
+        
+        output = full_text[len(prompt):].lstrip()
+        gen_solution = extract_functions(output)
+
+        if gen_solution is not None:
+            return gen_solution
+        else:
+            return output
 
     def generate(
         self, 
