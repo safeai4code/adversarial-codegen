@@ -67,14 +67,77 @@ We will support both original LLMs and their compressed versions.
 - 📘 MBPP / MBPP Plus
 
 ## ⚙️ Installation
+
+We recommend using [UV](https://github.com/astral-sh/uv) as the package installer for better dependency management and faster installation.
+
+### Install UV
+First, install UV using one of the following methods:
+
+```bash
+# For Linux/macOS with curl
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# For Windows (PowerShell)
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# Using pip (recommended)
+pip install uv
+```
+
+### Basic Installation
+If you only need basic functionality only with bitsanddytes quantization support:
 ```bash
 # Clone the repository
 git clone https://github.com/yourusername/adversarial-codegen
 cd adversarial-codegen
 
-# Install the package
-pip install -e .
+# Install the package with basic dependencies
+uv pip install -e .
 ```
+
+### Full Quantization Support
+If you want to use all quantization features:
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/adversarial-codegen
+cd adversarial-codegen
+
+# Install PyTorch first
+uv pip install torch>=2.5.1
+
+# Install with quantization dependencies
+uv pip install --no-build-isolation -e .[quant]
+```
+
+### Full Installation (Recommended)
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/adversarial-codegen
+cd adversarial-codegen
+
+# Install PyTorch first to avoid build issues
+uv pip install torch>=2.5.1
+
+# Install all dependencies including quantization support
+uv pip install --no-build-isolation -e .[all]
+```
+
+
+### Using pip (Alternative)
+If you prefer using traditional pip:
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/adversarial-codegen
+cd adversarial-codegen
+
+# Install PyTorch first
+pip install torch>=2.5.1
+
+# Install all dependencies
+pip install --no-build-isolation -e .[all]
+```
+
+Note: The `--no-build-isolation` flag is needed for proper installation of quantization dependencies like `autoawq`. UV is recommended over pip for its improved dependency resolution and installation speed.
 
 ## 🎮 Usage
 After installation, you can use the main functionality through the command-line interface. The framework provides two command-line interfaces:
