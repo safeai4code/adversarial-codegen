@@ -63,9 +63,6 @@ REQUIRED_PACKAGES = [
     'urllib3>=1.26.5',
     'fire>=0.5.0',
     'bitsandbytes>=0.41.1',
-    'optimum>=1.16.1',
-    'auto-gptq>=0.5.0',
-    'autoawq>=0.1.0',
     'cairosvg>=2.7.1',
 ]
 
@@ -124,6 +121,7 @@ setup(
     ],
     python_requires=">=3.10",
     install_requires=REQUIRED_PACKAGES,
+    setup_requires=['torch>=2.5.1'],  # Added setup_requires for torch
     extras_require=EXTRA_PACKAGES,
     include_package_data=True,
     cmdclass={
