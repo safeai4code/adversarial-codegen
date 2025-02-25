@@ -132,6 +132,7 @@ setup(
         'console_scripts': [
             'adversarial-codegen=adversarial_codegen.run:main',
             'adversarial-codegen-test=adversarial_codegen.tests.integration_test.quick_test:main',
+            'adversarial-codegen-noise=adversarial_codegen.noise:main',
         ],
     },
 )
