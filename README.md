@@ -272,14 +272,6 @@ The tool generates two types of outputs:
    - Venn diagrams showing overlap between different attack methods
    - Saved in the output folder
 
-## 👥 Contributing
-We welcome contributions! Please feel free to submit a Pull Request.
-For questions or suggestions, please contact:
-
-- 📧 Email: <a href="mailto:fangsen1996@gmail.com">fangsen1996@gmail.com</a>/<a href="mailto:sfang9@ncsu.edu">sfang9@ncsu.edu</a>
-- 💬 Open an issue
-- 🔀 Submit a PR
-
 ## 🙏 Acknowledgments
 This project builds upon and is inspired by several excellent works in the field:
 
