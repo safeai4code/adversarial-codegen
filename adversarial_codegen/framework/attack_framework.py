@@ -191,11 +191,11 @@ if __name__ == "__main__":
         "attack_model": 'gpt-3.5-turbo',
         "temperature": 0.7,
         "max_tokens": 150,
-        "api_path": "/home/sfang9/workshop/project_test/openai/openai-key",
+        "api_path": "",
         "attack_type": 'paraphrase',
         "input_type": None,
     }
     attack_framework = AttackFramework(
         model=model, attack_method="llm_attack", attack_config=attack_config, dataset="mbpp")
-    save_path = "/home/sfang9/workshop/project_test/test-results"
+    save_path = ""
     _, _ = attack_framework.run_attack(save_prompts=save_path, save_results=save_path)
