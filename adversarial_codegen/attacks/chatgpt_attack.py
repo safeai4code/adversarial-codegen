@@ -154,7 +154,7 @@ if __name__ == "__main__":
         'attack_model': 'gpt-3.5-turbo',
         'temperature': 0.7,
         'max_tokens': 150,
-        'api_path': "/home/sfang9/workshop/project_test/openai/openai-key",
+        'api_path': "",
         'attack_type': 'paraphrase'
     })
     
