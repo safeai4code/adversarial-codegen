@@ -296,7 +296,7 @@ if __name__ == "__main__":
         'model': 'gpt-4o',
         'temperature': 0.7,
         'max_tokens': 150,
-        'api_path': "/home/sfang9/workshop/project_test/openai/openai-key",
+        'api_path': "",
         'attack_type': AttackType.PARAPHRASE
     })
     
