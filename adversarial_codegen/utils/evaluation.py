@@ -352,7 +352,7 @@ if __name__ == "__main__":
             "solution": "def similar_elements(list1, list2):\n    return set(list1).intersection(set(list2))\n",
         },
     ]
-    test_file = "/home/sfang9/workshop/aisec/adversarial-attack-nlp/original_prompts.jsonl"
+    test_file = ""
     with open(test_file, "r") as f:
         generations = [json.loads(line) for line in f]
     
