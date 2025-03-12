@@ -105,7 +105,7 @@ setup(
     name="adversarial-codegen",
     version="0.1.0",
     author="Sen Fang",
-    author_email="fangsen1996@gmail.com",
+    author_email="",
     description="A framework for testing LLM robustness under adversarial attacks",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
