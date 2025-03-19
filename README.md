@@ -251,6 +251,24 @@ adversarial-codegen attack \
     --save_results /path/to/save/results
 ```
 
+### 5. 📂 Using Noise Attack
+
+```bash
+# Run with default settings (Llama-3.2-1B, gaussian noise)
+./noise_attack.sh
+```
+
+```bash
+Specify a different model
+./noise_attack.sh --model_name starcoder2-3b
+```
+
+
+```bash
+Use uniform noise instead of gaussian
+./noise_attack.sh --model_name Llama-3.2-1B --noise_type uniform
+```
+
 ## 📤 Output
 The tool generates two types of outputs:
 
