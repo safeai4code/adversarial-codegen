@@ -24,43 +24,39 @@ We currently support the following models:
   - deepseek-coder-1.3b
   - deepseek-coder-6.7b
   - deepseek-coder-33b
+- <img src="./assets/starcoder_logo.png" width="20"> [StarCoder](https://github.com/bigcode-project/starcoder)  <!-- From BigCode/HuggingFace -->
+  - starcoder-3b
+  - starcoder-7b
+  - starcoder-15b
+- <img src="./assets/codegen_logo.png" width="20"> [CodeGen](https://github.com/salesforce/CodeGen)     <!-- From Salesforce -->
+  - codegen-350M
+  - codegen-2b
+  - codegen-6b 
 
 ## 🛠️ Implemented Attack Methods
+### Adversarial Attack
 1. ⌨️ Character Attack (char_attack)
    - Introduces character-level perturbations
    - Randomly change character cases
-
 2. 🔄 Synonym Attack (synonym_attack)
    - Replaces words with semantically similar alternatives
    - Preserves overall meaning while testing robustness
-
 3. 🌐 Translation Attack (translate_attack)
    - Applies back-translation perturbations
    - Tests model resilience to paraphrasing
+   
+### Noise Attack
+1. 📊 Gaussian Noise Attack (gaussian_noise_attack)
+   - Adds random noise following normal distribution
+   - Controls perturbation intensity via standard deviation parameter
+2. 🎲 Uniform Noise Attack (uniform_noise_attack)
+   - Applies random noise with uniform distribution
+   - Sets clear boundaries on minimum and maximum perturbation values
 
 ## 🚀 Supported Models (In Plan)
 We will support both original LLMs and their compressed versions.
-
-- <img src="./assets/starcoder_logo.png" width="20"> [StarCoder](https://github.com/bigcode-project/starcoder)  <!-- From BigCode/HuggingFace --> :muscle:
-- <img src="./assets/codegen_logo.png" width="20"> [CodeGen](https://github.com/salesforce/CodeGen)     <!-- From Salesforce --> :muscle:
 - <img src="./assets/incoder_logo.png" width="20"> [InCoder](https://github.com/dpfried/incoder)     <!-- From Meta/Facebook --> :muscle:
 - 🎩 [Magicoder](https://github.com/ise-uiuc/magicoder) :muscle:
-
-## 🛠️ Implemented Attack Methods (In Plan)
-1. 🎯 Natural Noise Injection
-   - ⌨️ Typos and character swaps
-   - 📝 Spacing and formatting variations
-   - 💭 Comment modifications
-
-2. 🏗️ Structural Attacks
-   - 🔄 Variable name perturbations
-   - 🔀 Control flow modifications
-   - 🔌 API usage variations
-
-3. 🔄 Semantic Preserving Transformations
-   - 🔧 Code refactoring
-   - 🔁 Equivalent syntax modifications
-   - 🧮 Logic preservation with structural changes
 
 ## 📚 Datasets
 - 👥 HumanEval / HumanEval Plus
