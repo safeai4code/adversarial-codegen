@@ -18,15 +18,21 @@ Our framework provides:
 ## 🚀 Supported Models
 We currently support the following models:
 - <img src="./assets/llama_logo.jpg" width="20"> [CodeLLaMA](https://github.com/meta-llama/codellama)  <!-- Download from Meta's official repo -->
-  - llama-3.2-1b
-  - llama-3.2-3b
-  - llama-3.1-8b
+  - Llama-3.2-1b
+  - Llama-3.2-3b
+  - Llama-3.1-8b
 - <img src="./assets/deepseek_logo.png" width="20"> [DeepSeek](https://github.com/deepseek-ai/DeepSeek-Coder-V2)   <!-- From DeepSeek official website -->
   - deepseek-coder-1.3b
   - deepseek-coder-6.7b
   - deepseek-coder-33b
 - <img src="./assets/starcoder_logo.png" width="20"> [StarCoder](https://github.com/bigcode-project/starcoder)  <!-- From BigCode/HuggingFace -->
+  - starcoder2-3b
+  - starcoder2-7b
+  - starcoder2-15b
 - <img src="./assets/codegen_logo.png" width="20"> [CodeGen](https://github.com/salesforce/CodeGen)     <!-- From Salesforce -->
+  - codegen-350M-mono
+  - codegen-2B-mono
+  - codegen-6B-mono
 
 ## 🛠️ Implemented Attack Methods
 1. ⌨️ **Character Attack** (char_attack)
